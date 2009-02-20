@@ -12,10 +12,16 @@ class html_block {
 
   public $visible = true;
   public $form_context = null;
+  
+  // reference the block's parent page (html_htdoc)
+  public $htdoc = null;
 
   public $members = array();
 
   protected $parent = null;
+  
+  // holds a tpl_compiled instance if template was associated
+  private $_tpl = null;
 
   public function __construct() {
     if (func_num_args()>0) {
@@ -28,9 +34,11 @@ class html_block {
   public function add() {
     $arr = func_get_args();
     while(is_array($arr)&&(count($arr)==1)&&isset($arr[0])) $arr = $arr[0];
-    //if (empty($arr)) return;
+
     $this->arr_translate($arr);
-    $this->init_member_array($arr);
+    if (is_array($arr)) $this->init_member_array($arr);
+    else if ($arr instanceof html_block) $arr->init($this);
+
     if (is_array($arr)) $this->members = array_merge($this->members,$arr); else $this->members[] = $arr;
   }  
   
@@ -38,12 +46,15 @@ class html_block {
   public function add_p($path) {
     $arr = func_get_args(); array_shift($arr);
     while(is_array($arr)&&(count($arr)==1)&&isset($arr[0])) $arr = $arr[0];
-    //if (empty($arr)) return;
+
     $this->arr_translate($arr);
+    if (is_array($arr)) $this->init_member_array($arr);
+    else if ($arr instanceof html_block) $arr->init($this);
+
     $mbr =& $this->_get_path($path,true);
     if (!is_array($mbr)) $mbr = array($mbr);
     $do_merge = $path[strlen($path)-1]!='/';
-    $this->init_member_array($arr);
+
     if (is_array($arr)&&$do_merge) $mbr = array_merge($mbr,$arr); else $mbr[] = $arr;
   }
   
@@ -51,8 +62,11 @@ class html_block {
     $path = trim($path,'/');
     if (empty($path)) return;
     $mbr =& $this->_get_path($path,true);
-    if (is_array($value)) $this->arr_translate($value);
-    $this->init_member_array($value);
+
+    $this->arr_translate($value);
+    if (is_array($value)) $this->init_member_array($value);
+    else if ($value instanceof html_block) $value->init($this);
+    
     $mbr = $value;
   }
   
@@ -82,6 +96,7 @@ class html_block {
     
     return new $elm_class($type,$name,$param);
   }
+  
   private function arr_translate(&$arr) {
     if (!is_array($arr)) return;
     if (isset($arr[0])&&is_string($arr[0])&&(strlen($arr[0])>1)) {
@@ -92,34 +107,40 @@ class html_block {
         $arr = $this->form_element($arg,$name,$arr);
         return;
       }
-      if ($cmd=='~') {
-        array_shift($arr);
-        $arr = new html_template($arg,$arr);
-        return;
-      }
     }
     foreach($arr as $key => $val) if (is_array($val)) $this->arr_translate($arr[$key]);
   }
   
   public function init($parent=null) {
-    if (is_null($parent)||($parent instanceof html_block)) $this->parent = $parent;
-    else throw new Exception("Invalid parent object");
-    if (is_null($this->form_context)&&(!is_null($parent))) $this->form_context = $parent->form_context;
+    $this->parent = $parent;
+    if (!empty($parent)) {
+      $this->htdoc = $parent->htdoc;
+      if (empty($this->form_context)) $this->set_form_context($parent->form_context);
+    }
     $this->init_member_array($this->members);
-    $this->init_done = true;
   }
-  private function init_member_array($arr) {
-    if (is_array($arr)) {
-      foreach($arr as $mbr) {
-        if ($mbr instanceof html_block) $mbr->init($this);
-        elseif (is_array($mbr)) $this->init_member_array($mbr);
-      }
-    } elseif ($arr instanceof html_block) {
-      $arr->init($this);
+  
+  public function set_form_context($context) {
+    $this->form_context = $context;
+    $this->set_fc_members($context,$this->members);
+  }
+  
+  private function init_member_array(&$arr) {
+    foreach($arr as $mbr) {
+      if ($mbr instanceof html_block) $mbr->init($this);
+      elseif (is_array($mbr)) $this->init_member_array($mbr);
+    }
+  }
+
+  private function set_fc_members($context,&$arr) {
+    foreach($arr as $mbr) {
+      if ($mbr instanceof html_block) $mbr->set_form_context($context);
+      elseif (is_array($mbr)) $this->set_fc_members($context,$mbr);
     }
   }
 
   public final function get_html($param=null) {
+    if (!empty($this->_tpl)) return $this->_tpl->apply($this);
     return $this->visible?$this->render($param):'';
   }
   
@@ -151,7 +172,6 @@ class html_block {
   }
   
   private function &_get_path($path,$create=false) {
-    //echo "<pre>_get_path($path)</pre>";
     $path = trim($path,'/');
     $p = explode('/',$path);
     $mbr =& $this->members;
@@ -192,6 +212,23 @@ class html_block {
     foreach($this->members as $mbr) $res .= $this->render_member($mbr,$param);
     return $res;
   }
+  
+  // (moved from html_template:)
+  // associate template with the block
+  public function load_template($tpl_name) {
+    global $_pkgman;
+    $pkg = $_pkgman->get("html");
+    if (!isset($pkg->config['tpl_manager']))
+      $tplman = $pkg->config['tpl_manager'] = new html_tpl_manager();
+      else $tplman = $pkg->config['tpl_manager'];
+    $this->_tpl = empty($tpl_name)?null:$tplman->get_tpl($tpl_name);
+    //echo "[load_tpl:$tpl_name]";var_dump($this->_tpl);
+  }
+  
+  public function get_template() {
+    return $this->_tpl;
+  }
+  
   
 }
 ?>
