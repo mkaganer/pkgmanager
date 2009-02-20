@@ -39,8 +39,7 @@ class html_form_context {
   }
   
   // check if the control has already been attached
-  private function is_attached($obj,$subj=null) {
-    if (is_null($subj)) $subj = $this->controls;
+  private function is_attached($obj,$subj) {
     foreach($subj as $ctrl) {
       if (is_object($ctrl)&&($obj===$ctrl)) return true;
       if (is_array($ctrl)&&$this->is_attached($obj,$ctrl)) return true;
@@ -48,10 +47,7 @@ class html_form_context {
   }
   
   public function attach_control(html_form_elm $obj) {
-    if ($this->is_attached($obj)) {
-      //echo "[DUP:{$obj->name}]";
-      return;
-    }
+    if ($this->is_attached($obj,$this->controls)) return;
     $name = $obj->name;
     if ($obj instanceof html_form_radio) {
       $this->controls[$name][] = $obj;
@@ -60,6 +56,20 @@ class html_form_context {
       $this->controls[$name] = $obj;
     }
     if ($obj->is_submit()) $this->submits[] = $obj;
+  }
+  
+  // TODO: needs some debuging...
+  public function detach_control(html_form_elm $obj) {
+    if (!$this->is_attached($obj,$this->controls)) return;
+    $name = $obj->name;
+    if (!is_array($this->controls[$name])) unset($this->controls[$name]);
+    else {
+      foreach($this->controls[$name] as $key => $ctrl)
+        if ($obj===$ctrl) unset($this->controls[$name][$key]);
+      if (empty($this->controls[$name])) unset($this->controls[$name]);
+    }    
+    foreach($this->submits as $key => $ctrl)
+      if ($obj===$ctrl) unset($this->submits[$key]);
   }
   
   public function attach_submit($string) {

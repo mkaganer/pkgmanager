@@ -26,17 +26,19 @@ abstract class html_form_elm extends html_element {
   
   public function init($parent=null) {
     parent::init($parent);
-    if (is_null($this->form_context)) {
-      //var_dump($this);
-      throw new Exception("form_context is null with form elements!");
-    }
-    $this->form_context->attach_control($this);
+    if (!empty($this->form_context)) $this->form_context->attach_control($this);
   }
   
   public function value() {
-    if (!$this->init_done) throw new Exception("Object was not initialized!");
+    if (empty($this->form_context)) throw new Exception("form_context not set");
     return isset($this->form_context->data[$this->name])?
       $this->form_context->data[$this->name]:null;
+  }
+  
+  public function set_form_context($context) {
+    if (!empty($this->form_context)) $this->form_context->detach_control($this); 
+    parent::set_form_context($context);
+    if (!empty($this->form_context)) $this->form_context->attach_control($this);
   }
 
 }

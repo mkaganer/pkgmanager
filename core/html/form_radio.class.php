@@ -25,7 +25,6 @@ class html_form_radio extends html_form_elm {
     $ch_val = $this->checked_value;
     switch($method) {
     case 'get':
-      //echo "get[".$this->name."]?=[$ch_val]";
       return (isset($_GET[$this->name]))?($_GET[$this->name]==$ch_val):false;
     case 'post':
       return (isset($_POST[$this->name]))?($_POST[$this->name]==$ch_val):false;
@@ -33,6 +32,7 @@ class html_form_radio extends html_form_elm {
   }
   
   protected function render() {
+    if (empty($this->form_context)) throw new Exception("form_context not set");
     $val = $this->postback_value($this->form_context->get_method());
     $at = '';
     $attr = $this->attr;

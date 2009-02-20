@@ -28,6 +28,7 @@ class html_element extends html_block {
     if (!empty($inner)) {
       return "<${tag}${at}>${inner}</${tag}>";
     } else {
+      if (!empty($this->htdoc) && (!$this->htdoc->is_xml)) return "<${tag}${at}>"; 
       return "<${tag}${at} />";
     }
   }
