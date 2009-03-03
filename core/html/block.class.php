@@ -1,13 +1,17 @@
 <?php
 // B.H.
 
-// base class for all html template stuff
-// holds a list of sub-elements that may be accessed using "path" syntax
-// elements may be classes (instanceof html_block or html_url)
-// or strings (that will be rendered to the output as-is)
-// or arrays of the above
-//
-// this class does not support templates so the members are simply rendered one after another
+/**
+ * @desc Base class for all html template stuff
+ * holds a list of sub-elements that may be accessed using "path" syntax
+ * elements may be classes (instanceof html_block or html_url)
+ * or strings (that will be rendered to the output as-is)
+ * or arrays of the above.
+ * <i>This class does not support templates so the members are simply
+ * rendered one after another</i>
+ *
+ * @author mkaganer
+ */
 class html_block {
 
   public $visible = true;
@@ -31,6 +35,11 @@ class html_block {
   }
   
   // args: add($elm,...)
+  /**
+   * Adds elements to the block w/o explicit path 
+   * @param $element,...
+   * @return unknown_type
+   */
   public function add() {
     $arr = func_get_args();
     while(is_array($arr)&&(count($arr)==1)&&isset($arr[0])) $arr = $arr[0];
@@ -42,7 +51,11 @@ class html_block {
     if (is_array($arr)) $this->members = array_merge($this->members,$arr); else $this->members[] = $arr;
   }  
   
-  // args: add_p($path,$elm,...)
+  /**
+   * @param $path - path to add
+   * @param $elm,.... elements to add
+   * @return unknown_type
+   */
   public function add_p($path) {
     $arr = func_get_args(); array_shift($arr);
     while(is_array($arr)&&(count($arr)==1)&&isset($arr[0])) $arr = $arr[0];

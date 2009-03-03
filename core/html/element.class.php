@@ -1,6 +1,14 @@
 <?php
 // B.H.
 
+/**
+ * @desc Represents an HTML element. Holds element's name and attributes
+ * and renders all it's members inside the element. Empty elements are rendered
+ * according to XML or SGML rules (i.e. &lt;img... /&gt; or &lt;img....&gt;)
+ * with respect to html_htdoc::$is_xml setting   
+ * @author mkaganer
+ *
+ */
 class html_element extends html_block {
 
   public $attr = array();
