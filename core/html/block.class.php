@@ -2,31 +2,67 @@
 // B.H.
 
 /**
- * @desc Base class for all html template stuff
- * holds a list of sub-elements that may be accessed using "path" syntax
- * elements may be classes (instanceof html_block or html_url)
- * or strings (that will be rendered to the output as-is)
- * or arrays of the above.
- * <i>This class does not support templates so the members are simply
- * rendered one after another</i>
+ * @desc Base class for all the html stuff. Holds a list of sub-elements that may be accessed
+ * using "path" syntax.
+ * Elements may be:
+ * <ul><li>classes (instanceof <code>html_block</code> or <code>html_url</code>)</li>
+ * <li>strings (that will be rendered to the output as-is)</li>
+ * <li>arrays (or nested arrays) of the above.</li></ul>
+ * Access to the block's members is done using "path" language (@see html_block::add_p)
  *
  * @author mkaganer
  */
 class html_block {
 
+  /**
+   * @desc If false, the block will not be rendered to the output.
+   * @var bool
+   */
   public $visible = true;
+  
+  /**
+   * @desc References the "form_context" instance associated with the current
+   * object. Must be not null when using data-binding controls like html_form_elm.
+   * Note: when <code>html_block</code> is added to another block using 
+   * <code>add/add_p/set</code> methods and the child's form_context is null,
+   * it is set to the form context of the parent control in order to allow
+   * "nesting" inside the form blocks. 
+   * @var html_form_context
+   */
   public $form_context = null;
   
-  // reference the block's parent page (html_htdoc)
+  /**
+   * @desc reference the block's parent page
+   * @var html_htdoc
+   */
   public $htdoc = null;
 
+  /**
+   * @desc block's members array
+   * @var array
+   */
   public $members = array();
 
+  /**
+   * @desc Parent block. Set by $this->add/add_p/set
+   * @var html_block
+   */
   protected $parent = null;
   
-  // holds a tpl_compiled instance if template was associated
+  /**
+   * @desc If not null, the template will be used in rendering process
+   * If false, rendering will just output all the members onr after another.
+   * @var html_tpl_compiled
+   */
   private $_tpl = null;
 
+  
+  
+  /**
+   * Create a basic html_block instance, and optionally add
+   * some inner members (a shortcut to calling $block->add(...)) 
+   * @param mixed $elm,... - elements to add to a new instance
+   */
   public function __construct() {
     if (func_num_args()>0) {
       $args = func_get_args();
@@ -34,11 +70,10 @@ class html_block {
     }
   }
   
-  // args: add($elm,...)
+ 
   /**
-   * Adds elements to the block w/o explicit path 
-   * @param $element,...
-   * @return unknown_type
+   * @desc Adds elements to the block w/o explicit path 
+   * @param mixed $element,... - elements to add 
    */
   public function add() {
     $arr = func_get_args();
@@ -52,9 +87,8 @@ class html_block {
   }  
   
   /**
-   * @param $path - path to add
-   * @param $elm,.... elements to add
-   * @return unknown_type
+   * @param string $path - path to add
+   * @param mixed $elm,... elements to add
    */
   public function add_p($path) {
     $arr = func_get_args(); array_shift($arr);
@@ -90,18 +124,33 @@ class html_block {
     $mbr = null;
   }
   
+  /**
+   * @param $path
+   * @return html_block|string|mixed
+   */
   public function get($path) {
     $mbr =& $this->_get_path($path);
     while (is_array($mbr)&&(count($mbr)==1)&&isset($mbr[0])) $mbr =& $mbr[0];
     return $mbr;
   }
   
+  /**
+   * @desc Number of top-level members in the block
+   * @return int
+   */
   public function count() {
     return count($this->members);
   }
   
-  // creates a new instance of the appropriate form element
-  // does not add this element, must be added explicitly
+  /**
+   * @desc Creates a new instance of the appropriate form element.
+   * Note: this method does not add this element to the block,
+   * so itmust be added explicitly
+   * @param string $type - one of <code>config['form_element_map']</code> 
+   * @param string $name - name attribute
+   * @param array $param - additional parameters (@see appropriate element class for details)
+   * @return unknown_type
+   */
   public function form_element($type,$name,$param=null) {
     global $_pkgman;
     $elm_class = $_pkgman->get('html')->config['form_element_map'][$type];
@@ -219,15 +268,22 @@ class html_block {
     return (string)$mbr;
   }
   
-  // to be overriden in the inheriting classes
+  /**
+   * @desc To be overriden in the inheriting classes
+   * @param mixed $param - this will be passed to the nested blocks
+   * @return string
+   */
   protected function render($param=null) {
     $res = '';
     foreach($this->members as $mbr) $res .= $this->render_member($mbr,$param);
     return $res;
   }
   
-  // (moved from html_template:)
-  // associate template with the block
+  /**
+   * @desc (moved from html_template)
+   * associate template with the block
+   * @param string $tpl_name - template's name
+   */
   public function load_template($tpl_name) {
     global $_pkgman;
     $pkg = $_pkgman->get("html");
@@ -235,7 +291,6 @@ class html_block {
       $tplman = $pkg->config['tpl_manager'] = new html_tpl_manager();
       else $tplman = $pkg->config['tpl_manager'];
     $this->_tpl = empty($tpl_name)?null:$tplman->get_tpl($tpl_name);
-    //echo "[load_tpl:$tpl_name]";var_dump($this->_tpl);
   }
   
   public function get_template() {
