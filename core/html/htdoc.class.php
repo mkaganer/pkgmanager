@@ -38,10 +38,15 @@ class html_htdoc extends html_block {
   public $attr;
   
   /**
+   * @desc Reference the head element
+   * @var html_head
+   */
+  public $head;
+  
+  /**
    * @param string $title document's title. Default: "(untitled)"
    * @param string $doctype DOCTYPE code (see <code>$this->set_doctype()</code>). Default: "xhtml-t". 
    * @param string $encoding encoding used in the current document. Default: utf-8
-   * @return unknown_type
    */
   public function __construct($title="(untitled)",$doctype="xhtml-t",$encoding="utf-8") {
     parent::__construct();
@@ -50,13 +55,13 @@ class html_htdoc extends html_block {
     $this->set('encoding',$encoding);
     $this->attr = array(); 
     $this->set_doctype($doctype);
-    $this->set('head', new html_head($this));
+    $this->set('head', $this->head = new html_head($this));
     $this->set('body', new html_element('body'));
   }
   
   /**
    * @desc Get the document's body member
-   * @return html_block|string
+   * @return html_block
    */
   public function body() {
     return $this->get('body');
