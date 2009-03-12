@@ -10,7 +10,8 @@ class html_tpl_c_lang extends html_tpl_c_elm {
   }
   
   public function render($block) {
-    global $__lang;
-    return $__lang[$this->path];
+    if (!function_exists('_lang')) 
+      throw new Exception('You need to define _lang() function in order to use ${lang:...} template construct');
+    return _lang($this->path);
   }
 }
