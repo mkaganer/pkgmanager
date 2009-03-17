@@ -1,39 +1,84 @@
 <?php
 // B.H.
 
-// base class for SQL connections
+/**
+ * @desc Base class for SQL connections
+ * @author mkaganer
+ */
 abstract class sql_connection {
 
-  public $throw_on_error = true; // throw sql_error exception if query results in error
-  public $params; // driver-specific parameters in assoc. array
+  /**
+   * @desc Connection-specific config. Required parameter:
+   *   'driver' => one of $pkg->config['drivers']
+   * See specific driver connection class for more params
+   * @var array
+   */
+  protected $config;
 
-  // this is a "class factory" function. It creates a new instance of sql_connection extending
-  // class according to the connection info given
-  // $con_info = array('engine','host','user','pass','db')
-  static public function open($con_info=null,$params=null) {
+  /**
+   * @desc this is a "class factory" function. It creates a new instance of sql_connection extending
+   * class according to the connection config given
+   * $con_config = array('driver'=>'engine',...)
+   * See driver's docs for possible config values
+   * @param array $con_config - connection config, if null $pkg->config['connection'] will be used
+   * @return sql_connection open connection class
+   */
+  static public function open($con_config=null) {
     global $_pkgman;
     $pkg = $_pkgman->get('sql');
-    if (empty($con_info)) {
+    if (empty($con_config)) {
       if (!isset($pkg->config['connection'])) throw new Exception("No connection info specified!");
-      $con_info = $_pkgman->get('sql')->config['connection'];
+      $con_config = $_pkgman->get('sql')->config['connection'];
     }
-    $driver = $con_info[0]; 
+    $driver = $con_config['driver'];
     if (!isset($pkg->config['drivers'][$driver])) throw new Exception("Unknown SQL engine $driver");
-    
+
     $con_class = $pkg->config['drivers'][$driver];
-    return new $con_class($con_info,$params);
+    return new $con_class($con_config);
   }
-  
+
   // DB driver's interface definition:
-  // returns sql_result or true on success or FALSE on failure
+
+  /**
+   * @desc switch to another database
+   * @param string $db - database name
+   */
+  abstract public function select_db($db);
+
+  /**
+   * @desc Basic sql query method
+   * @param $query
+   * @return sql_mysqli_result or true on success or false on failure
+   */
   abstract public function query($query);
-  abstract public function isError(); // true if last operation resulted in error
-  abstract public function ErrorMsg(); // last error message text
-  abstract public function insert_id(); // last insert id
-  abstract public function escape($str); // prepare string to be pasted into a query
-  
-  
-  // select 1 column of results from the query
+
+  /**
+   * @return true if last operation resulted in error
+   */
+  abstract public function is_error();
+
+  /**
+   * @return last error message text
+   */
+  abstract public function error_msg();
+
+  /**
+   * @return last insert id
+   */
+  abstract public function insert_id();
+
+  /**
+   * @param $str - input string
+   * @return properly escaped string for SQL data values
+   */
+  abstract public function escape($str);
+
+  /**
+   * @desc select 1 column of results from the query
+   * @param $query - SQL
+   * @param int $col_idx=0 - column index
+   * @return array
+   */
   public function select_v($query,$col_idx=0) {
     $res = $this->query($query);
     if (empty($res)) return false;
@@ -42,7 +87,7 @@ abstract class sql_connection {
     unset($res);
     return $arr;
   }
-  
+
   // select only 1 value from result
   public function select_s($query,$col_idx=0) {
     $res = $this->query($query);
@@ -51,7 +96,7 @@ abstract class sql_connection {
     unset($res);
     return $is_ok?$data[$col_idx]:false;
   }
-  
+
   // returns 1 row as array or false
   public function select_r($query) {
     $res = $this->query($query);
@@ -60,7 +105,7 @@ abstract class sql_connection {
     unset($res);
     return $r;
   }
-  
+
   // returns a 2-dimentional array each row is an assoc. array fetched from result's row
   // (like DataSet.Fill of .NET)
   // if $primary_key is specified, it's column's key to be used as output array's key
@@ -74,7 +119,7 @@ abstract class sql_connection {
     unset($res);
     return $a;
   }
-  
+
   // select 2 columns as hash (PHP array):
   // first column is a key, and the second is the value
   public function select_h($query) {
@@ -106,11 +151,10 @@ abstract class sql_connection {
       }
     }
     $sql .= " where ".$where;
-    //echo "<div>sql: [$sql]</div>";
     $res = $this->query($sql);
     return ($res!=false);
   }
-  
+
   public function insert($table,$values) {
     $sql = "insert into `$table` (";
     $psik = false;
@@ -132,9 +176,9 @@ abstract class sql_connection {
       }
     }
     $sql .= ")";
-    //echo "<div>sql: [$sql]</div>";
     $res = $this->query($sql);
     return ($res!=false);
   }
 
 }
+?>

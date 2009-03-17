@@ -1,18 +1,26 @@
 <?php
 // B.H.
 
-class sql_mysqli_result {
+class sql_mysqli_result extends sql_result {
 
-  private $link,$result;
+  /**
+   * @var sql_mysqli_connection
+   */
+  private $connection;
+
+  /**
+   * @var mysqli_result
+   */
+  private $result;
 
   // should be called by sql_mysqli_connection::query
-  public function __construct($link,$result) {
+  public function __construct($connection,$result) {
     if (empty($result)) throw new Exception("Empty result from a query");
-    $this->link = $link; $this->result = $result;
+    $this->connection = $connection;
+    $this->result = $result;
   }
-  
+
   public function __destruct() {
-    //echo "<div>res: close</div>";
     $this->result->free();
   }
 
@@ -27,5 +35,5 @@ class sql_mysqli_result {
     $data = $this->result->fetch_array(MYSQLI_ASSOC);
     return !(empty($data));
   }
-  
+
 }

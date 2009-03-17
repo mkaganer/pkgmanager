@@ -2,36 +2,36 @@
 // B.H.
 
 /**
- * @desc mysqli driver connector
+ * @desc legacy mysql driver connector
  * @author mkaganer
  */
-class sql_mysqli_connection extends sql_connection {
+class sql_mysql_connection extends sql_connection {
 
   /**
-   * @var mysqli - reference to a wrapped mysqli object
+   * @var mysql link resource
    */
   public $link;
 
   /**
    * @desc Connect to a mysql using mysqli extention.
-   * $con_config common params and default values:
-   *   'host' => ini_get("mysqli.default_host"), 'port' => ini_get("mysqli.default_port"),
-   *   'user' => ini_get("mysqli.default_user"), 'pass' => ini_get("mysqli.default_pw"),
+   * $con_config some common params and default values:
+   *   'host' => ini_get("mysql.default_host"),
+   *   'user' => ini_get("mysql.default_user"),
+   *   'pass' => ini_get("mysql.default_password"),
    *   'db' => '',
-   * if $con_config['link'] is set to mysqli object, do not open new connection
-   * just wrap already open mysqli connection with this class
+   * if $con_config['link'] is set to mysql link resource, do not open
+   * a new connection, just wrap already open mysql connection with this class
    * @param $con_config - connection config
    */
   public function __construct($con_config) {
     global $_pkgman;
     $pkg = $_pkgman->get("sql");
     $default_config = array(
-      'host' => ini_get("mysqli.default_host"),
-      'port' => ini_get("mysqli.default_port"),
-      'user' => ini_get("mysqli.default_user"),
-      'pass' => ini_get("mysqli.default_pw"),
+      'host' => ini_get("mysql.default_host"),
+      'user' => ini_get("mysql.default_user"),
+      'pass' => ini_get("mysql.default_password"),
       'db' => '',
-      'socket' => ini_get("mysqli.default_socket"),
+      'new_link' => false,
       'charset' => @$pkg->config['charset'],
       'buffered' => true,
       'throw_on_error' => @$pkg->config['throw_on_error'],
@@ -40,21 +40,22 @@ class sql_mysqli_connection extends sql_connection {
       array_merge($default_config,$con_config);
     if (!empty($config['link']))
       $link = $config['link'];
-      else $link = new mysqli($config['host'],$config['user'],$config['pass'],
-                              $config['db'],$config['port'],$config['socket']);
-    if (!$link) throw new Exception("MYSQLi connection failed!");
+      else $link = mysql_connect($config['host'],$config['user'],$config['pass'],
+                                 $config['new_link']);
+    if (!$link) throw new Exception("mysql connection failed!");
     $this->config = $config;
     $this->link = $link;
 
-    if (!empty($config['charset'])) $link->set_charset($config['charset']);
+    if (!empty($config['charset'])) mysql_set_charset($config['charset'],$link);
+    if (!empty($config['db'])) $this->select_db($config['db']);
   }
 
   public function __destruct() {
-    if ($this->link) $this->link->close();
+    if ($this->link) mysql_close($this->link);
   }
 
   public function select_db($db) {
-  	$this->link->select_db($db);
+  	mysql_select_db($db,$this->link);
   }
 
   /* (non-PHPdoc)
@@ -64,26 +65,26 @@ class sql_mysqli_connection extends sql_connection {
     global $_trace_log;
     if (defined('_TRACE_QUERIES')&&empty($_trace_log)) $_trace_log = new utils_microtimer();
     $snap = microtime();
-    $mode = $this->config['buffered']?MYSQLI_STORE_RESULT:MYSQLI_USE_RESULT;
-    $res = $this->link->query($query,$mode);
+    $query_func = $this->config['buffered']?"mysql_query":"mysql_unbuffered_query";
+    $res = call_user_func($query_func,$query,$this->link);
     if (($res===false) || (is_null($res))) {
       if ($this->config['throw_on_error'])
-        throw new sql_error($this->link->error,$this->link);
+        throw new sql_error($this->error_msg(),$this->link);
       return false;
     }
     if (defined('_TRACE_QUERIES')) $_trace_log->snapshot('QUERY: '.$query,$snap);
     if ($res===true) return true;
-    return new sql_mysqli_result($this,$res);
+    return new sql_mysql_result($this,$res);
   }
 
   public function is_error() {
-    return ($this->link->errno>0);
+    return  (mysql_errno($this->link)>0);
   }
   public function error_msg() {
-    return $this->link->error;
+  	return mysql_error($this->link);
   }
   public function insert_id() {
-    return $this->link->insert_id;
+  	return mysql_insert_id($this->link);
   }
 
   public function escape($str) {
