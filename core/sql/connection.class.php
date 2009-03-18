@@ -74,6 +74,20 @@ abstract class sql_connection {
   abstract public function escape($str);
 
   /**
+   * @desc Creates a new filter instance. See sql_mysql_filter class for more info
+   * @param array $filters
+   * @param string $operator - default is AND
+   * @param string $prefix - default is none
+   * @return sql_mysql_filter
+   */
+  public function filter($filters,$operator=null,$prefix=null) {
+  	 // currently, we default to mysql-style syntax
+  	 // In the future, this should be extended to support more
+  	 // db engines
+     return new sql_mysql_filter($this,$filters,$operator,$prefix);
+  }
+
+  /**
    * @desc select 1 column of results from the query
    * @param $query - SQL
    * @param int $col_idx=0 - column index
@@ -88,7 +102,12 @@ abstract class sql_connection {
     return $arr;
   }
 
-  // select only 1 value from result
+  /**
+   * @desc select only 1 value from result ($col_idx column in the first row)
+   * @param $query - SQL
+   * @param int $col_idx=0 - column index
+   * @return mixed value
+   */
   public function select_s($query,$col_idx=0) {
     $res = $this->query($query);
     if (!is_object($res)) return false;
@@ -97,7 +116,11 @@ abstract class sql_connection {
     return $is_ok?$data[$col_idx]:false;
   }
 
-  // returns 1 row as array or false
+  /**
+   * @desc returns 1 row as array or false
+   * @param $query
+   * @return array|boolean
+   */
   public function select_r($query) {
     $res = $this->query($query);
     if (!is_object($res)) return false;
@@ -106,9 +129,14 @@ abstract class sql_connection {
     return $r;
   }
 
-  // returns a 2-dimentional array each row is an assoc. array fetched from result's row
-  // (like DataSet.Fill of .NET)
-  // if $primary_key is specified, it's column's key to be used as output array's key
+  //
+  /**
+   * @desc Returns a 2-dimentional array each row is an assoc. array fetched from result's row.
+   * If $primary_key is specified, it's value will be used as a keys for the outer array
+   * @param $query
+   * @param $primary_key
+   * @return array
+   */
   public function select_table($query,$primary_key=null) {
     $res = $this->query($query);
     if (!is_object($res)) return false;
@@ -120,8 +148,13 @@ abstract class sql_connection {
     return $a;
   }
 
-  // select 2 columns as hash (PHP array):
-  // first column is a key, and the second is the value
+  //
+  /**
+   * @desc Select 2 columns as hash (PHP assoc. array):
+   * first column is a key, and the second is the value
+   * @param string $query
+   * @return array
+   */
   public function select_h($query) {
     $res = $this->query($query);
     if (!is_object($res)) return false;
@@ -131,10 +164,17 @@ abstract class sql_connection {
     return $a;
   }
 
-  // construct UPDATE statement
-  // $values is an assoc. array ('column'=>'value',...)
-  // if 'column' starts with ! then 'value' is not quoted but threated as an SQL expression
-  // example $link->update('tab1',array('name'=>'Moshe','!timestamp'=>'now()','id=770');
+  /**
+   * @desc Construct an UPDATE SQL statement:
+   * $values is an assoc. array ('column'=>'value',...)
+   * If 'column' starts with ! then 'value' is not quoted but threated as an SQL expression:
+   *   Example:
+   *   <code>$link->update('tab1',array('name'=>'Moshe','!timestamp'=>'now()','id=770');</code>
+   * @param string $table
+   * @param array $values - array('col1'=>'val1',...'!time'=>'now()')
+   * @param string $where - a string to use in the WHERE clause
+   * @return boolean - true on success
+   */
   public function update($table,$values,$where) {
     $where = trim($where);
     if (empty($where)) throw new Exception("update(where) is empty!");
@@ -155,6 +195,16 @@ abstract class sql_connection {
     return ($res!=false);
   }
 
+  /**
+   * @desc Construct an INSERT SQL statement:
+   * $values is an assoc. array ('column'=>'value',...)
+   * If 'column' starts with ! then 'value' is not quoted but threated as an SQL expression:
+   *   Example:
+   *   <code>$link->insert('tab1',array('name'=>'Moshe','!timestamp'=>'now()');</code>
+   * @param string $table
+   * @param array $values - array('col1'=>'val1',...'!time'=>'now()')
+   * @return boolean - true on success
+   */
   public function insert($table,$values) {
     $sql = "insert into `$table` (";
     $psik = false;
