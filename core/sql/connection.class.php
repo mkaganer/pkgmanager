@@ -13,7 +13,19 @@ abstract class sql_connection {
    * See specific driver connection class for more params
    * @var array
    */
-  protected $config;
+  public $config;
+
+  /**
+   * @desc Model provider instance, created by the first call to $this->get_model()
+   * @var sql_model_provider
+   */
+  protected $model_provider = null;
+
+  /**
+   * @desc Cached model objects from $this->get_model()
+   * @var array of sql_model
+   */
+  protected $model_cache = array();
 
   /**
    * @desc this is a "class factory" function. It creates a new instance of sql_connection extending
@@ -24,17 +36,47 @@ abstract class sql_connection {
    * @return sql_connection open connection class
    */
   static public function open($con_config=null) {
-    global $_pkgman;
-    $pkg = $_pkgman->get('sql');
-    if (empty($con_config)) {
+    $pkg = pkgman_manager::getp('sql');
+  	if (empty($con_config)) {
       if (!isset($pkg->config['connection'])) throw new Exception("No connection info specified!");
-      $con_config = $_pkgman->get('sql')->config['connection'];
+      $con_config = $pkg->config['connection'];
     }
     $driver = $con_config['driver'];
     if (!isset($pkg->config['drivers'][$driver])) throw new Exception("Unknown SQL engine $driver");
 
     $con_class = $pkg->config['drivers'][$driver];
     return new $con_class($con_config);
+  }
+
+  /**
+   * @desc Must be called by all specific DB driver constructors
+   */
+  protected function __construct() {
+  	$pkg = pkgman_manager::getp('sql');
+  	$this->config = array(
+      'model_provider' => @$pkg->config['default_model_provider'],
+  	);
+  }
+
+  /**
+   * @desc Get model object by model's name using the defined model_provider to load the model's class.
+   * On the first call, model provider object is created.
+   * If $cache is true (default), will reuse previously created model classes
+   * with the same $model_name instead of creating a new instance.
+   * @param string $model_name
+   * @param boolean $cache
+   * @return sql_model
+   */
+  public function get_model($model_name,$cache=true) {
+    if (isset($this->model_cache[$model_name])) return $this->model_cache[$model_name];
+  	if (empty($this->model_provider)) {
+  		$provider_class = $this->config['model_provider'];
+  		$this->model_provider = new $provider_class($this);
+  	}
+  	$mod = $this->model_provider->get_model($model_name);
+  	if (empty($mod)||(!($mod instanceof sql_model)))
+  	    throw new Exception("Model '$model_name' invalid or not found!");
+  	return ($this->model_cache[$model_name] = $mod);
   }
 
   // DB driver's interface definition:
@@ -88,6 +130,20 @@ abstract class sql_connection {
   }
 
   /**
+   * @desc build a field list for select (and other) statements. If prefix is not null, it will be
+   * prepended to each name as a table/database alias
+   * @param array $list
+   * @return string
+   */
+  public function field_list($list,$prefix=null) {
+  	$res = array();
+  	foreach($list as $fld) {
+  		$res[] = (empty($prefix))?"`$fld`":"${prefix}.`$fld`";
+  	}
+  	return implode(", ",$res);
+  }
+
+  /**
    * @desc select 1 column of results from the query
    * @param $query - SQL
    * @param int $col_idx=0 - column index
@@ -129,7 +185,6 @@ abstract class sql_connection {
     return $r;
   }
 
-  //
   /**
    * @desc Returns a 2-dimentional array each row is an assoc. array fetched from result's row.
    * If $primary_key is specified, it's value will be used as a keys for the outer array
@@ -170,14 +225,17 @@ abstract class sql_connection {
    * If 'column' starts with ! then 'value' is not quoted but threated as an SQL expression:
    *   Example:
    *   <code>$link->update('tab1',array('name'=>'Moshe','!timestamp'=>'now()','id=770');</code>
+   * $where may also be any object that defines __toString() method, which is usable for passing
+   * sql_filter instance
    * @param string $table
    * @param array $values - array('col1'=>'val1',...'!time'=>'now()')
    * @param string $where - a string to use in the WHERE clause
    * @return boolean - true on success
    */
   public function update($table,$values,$where) {
+  	if (is_object($where)) $where = $where->__toString();
     $where = trim($where);
-    if (empty($where)) throw new Exception("update(where) is empty!");
+    if (empty($where)) throw new Exception("update() \$where is empty!");
     $sql = "update `$table` set ";
     $psik = false;
     foreach ($values as $col => $val) {

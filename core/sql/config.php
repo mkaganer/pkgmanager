@@ -24,6 +24,8 @@ $config = array(
     'mysql' => 'sql_mysql_connection'
   ),
 
+  'default_model_provider' => 'sql_model_provider',
+
 );
 
 /*

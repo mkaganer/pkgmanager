@@ -8,16 +8,42 @@
  */
 class pkgman_manager {
 
-  public $roots; // array of root paths for packages library
+  /**
+   * @desc array of root paths for packages library
+   * @var array of string
+   */
+  public $roots;
 
-  private $imported; // array of ("pkg" => pkgman_package) for all imported packages
+  /**
+   * @desc array of ("pkg" => pkgman_package) for all imported packages
+   * @var array
+   */
+  private $imported;
 
   // enforce single instance
+
+  /**
+   * @var pkgman_manager
+   */
   private static $instance = null;
 
+  /**
+   * @return pkgman_manager
+   */
   public static function get_instance() {
     if (!empty(self::$instance)) return self::$instance;
     return self::$instance = new self();
+  }
+
+  /**
+   * @desc Optimized shortcut to pkgman_manager::get_instance()->get()
+   * @param string $package package name
+   * @return pkgman_package
+   */
+  public static function getp($package) {
+    if (!empty(self::$instance)) return self::$instance->get($package);
+  	self::$instance = new self();
+  	return self::$instance->get($package);
   }
 
   protected function __construct() {
@@ -25,6 +51,10 @@ class pkgman_manager {
     $this->imported = array();
   }
 
+  /**
+   * @desc Add file system path where to look for the directories with packages
+   * @param string $root
+   */
   public function add_root($root) {
     $root = realpath(rtrim($root,"\\/"));
     if (!is_dir($root)) throw new Exception("add_root($root) is not a directory!");
@@ -32,6 +62,11 @@ class pkgman_manager {
     $this->roots[] = $root;
   }
 
+  /**
+   * @desc Get package's descriptor class
+   * @param string $package
+   * @return pkgman_package
+   */
   public function get($package) {
     if (!isset($this->imported[$package])) return null;
     return $this->imported[$package];
@@ -110,10 +145,19 @@ class pkgman_manager {
    * @return bool
    */
   public function load_class($class,$test_only=false) {
+  	$base = microtime();
+  	// when called not from __autoload, the required class may be already defined
+  	if (class_exists($class,false)||interface_exists($class,false)) return true;
     foreach($this->imported as $pkg) {
       if (strpos($class,$pkg->prefix)!==0) continue;
-      if ($pkg->load_class($class,$test_only)) return true;
+      if ($pkg->load_class($class,$test_only)) {
+        if (defined("_TRACE_LOAD_CLASS"))
+            $GLOBALS['_trace_log']->snapshot("load_class($class)",$base);
+      	return true;
+      }
     }
+    if (defined("_TRACE_LOAD_CLASS"))
+        $GLOBALS['_trace_log']->snapshot("load_class($class)",$base);
     return false;
   }
 

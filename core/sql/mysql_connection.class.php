@@ -24,8 +24,9 @@ class sql_mysql_connection extends sql_connection {
    * @param $con_config - connection config
    */
   public function __construct($con_config) {
-    global $_pkgman;
-    $pkg = $_pkgman->get("sql");
+    parent::__construct();
+    $pkg = pkgman_manager::getp("sql");
+
     $default_config = array(
       'host' => ini_get("mysql.default_host"),
       'user' => ini_get("mysql.default_user"),
@@ -36,14 +37,16 @@ class sql_mysql_connection extends sql_connection {
       'buffered' => true,
       'throw_on_error' => @$pkg->config['throw_on_error'],
     );
-    $config = empty($con_config)?$default_config:
-      array_merge($default_config,$con_config);
+
+    // merge all config arrays together
+    if (empty($con_config)) $con_config = array();
+    $this->config = $config = array_merge($this->config,$default_config,$con_config);
+
     if (!empty($config['link']))
       $link = $config['link'];
       else $link = mysql_connect($config['host'],$config['user'],$config['pass'],
                                  $config['new_link']);
     if (!$link) throw new Exception("mysql connection failed!");
-    $this->config = $config;
     $this->link = $link;
 
     if (!empty($config['charset'])) mysql_set_charset($config['charset'],$link);
