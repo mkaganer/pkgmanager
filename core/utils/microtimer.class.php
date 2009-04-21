@@ -1,6 +1,11 @@
 <?php
 // B.H.
 
+/**
+ * @desc This class is used for profiling and debuging 
+ * @author mkaganer
+ *
+ */
 class utils_microtimer {
 
   public $snapshots = array(); // diff from $base
