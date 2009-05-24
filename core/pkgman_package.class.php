@@ -69,6 +69,7 @@ class pkgman_package {
       $class_name = substr($class_name,strlen($prefix));
       else return false;
     $file = $this->path."/".$class_name.".class.php";
+    //echo "check:$file\n";
     if (!file_exists($file)) return false;
     if (!$test_only) include($file);
     return true;
