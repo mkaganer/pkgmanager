@@ -34,6 +34,7 @@ require(_PKGMAN_ROOT."/pkgman_package.class.php");
 /* @var pkgman_manager */
 $_pkgman = pkgman_manager::get_instance();
 
+// TODO: Make use of register_autoload() to enable cooperaton with another autoload-based frameworks
 // "magic" PHP function that will be called every time when PHP cannot find required class
 function __autoload($class) {
   global $_pkgman;

@@ -13,7 +13,7 @@
 $config = array(
 
   // default charset to be used by the connection
-  'charset' => 'utf-8',
+  'charset' => 'utf8',
 
   // If true,  throw sql_exception's on SQL errors
   // otherwise query will return false

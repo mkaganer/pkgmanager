@@ -26,6 +26,11 @@ abstract class sql_connection {
    * @var array of sql_model
    */
   protected $model_cache = array();
+  
+  /**
+   * @var sql_connection
+   */
+  protected static $default_connection = null;
 
   /**
    * @desc this is a "class factory" function. It creates a new instance of sql_connection extending
@@ -33,9 +38,10 @@ abstract class sql_connection {
    * $con_config = array('driver'=>'engine',...)
    * See driver's docs for possible config values
    * @param array $con_config - connection config, if null $pkg->config['connection'] will be used
+   * @param $is_default - if true, static default connection will be set
    * @return sql_connection open connection class
    */
-  static public function open($con_config=null) {
+  static public function open($con_config=null,$is_default = true) {
     $pkg = pkgman_manager::getp('sql');
   	if (empty($con_config)) {
       if (!isset($pkg->config['connection'])) throw new Exception("No connection info specified!");
@@ -45,7 +51,18 @@ abstract class sql_connection {
     if (!isset($pkg->config['drivers'][$driver])) throw new Exception("Unknown SQL engine $driver");
 
     $con_class = $pkg->config['drivers'][$driver];
-    return new $con_class($con_config);
+    $con = new $con_class($con_config);
+    if ($is_default) self::$default_connection = $con;
+    return $con; 
+  }
+  
+  /**
+   * @desc Returns a default connection (using config data), opens it if needed
+   * @return sql_connection
+   */
+  static public function get_connection() {
+      if (!empty(self::$default_connection)) return self::$default_connection;
+      return self::$default_connection = self::open();
   }
 
   /**
