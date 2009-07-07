@@ -7,10 +7,20 @@ class html_url {
   public $host;
   public $path;
   public $query;
+  public $hash;
   
   public function __construct($url) {
-    list($path,$query) = explode('?',$url,2);
-    if (!empty($query)) $this->parse_query($query);
+    $url = trim($url);
+    if (strpos($url,'#')!==false) {
+      list($url,$hash) = explode('#',$url,2);
+      $this->hash = $hash;
+    } else $this->hash = null;
+    if (strpos($url,'?')!==false) {
+      list($path,$query) = explode('?',$url,2); 
+      if (!empty($query)) $this->parse_query($query);
+    } else {
+      $path = $url;
+    }
     if (preg_match('#^([a-z0-9]+)://(.*)$#i',$path,$m)) {
       $this->is_absolute = true;
       $this->schema = $m[1];
@@ -52,6 +62,7 @@ class html_url {
       $qstr = $this->query_to_str($query_merge);
       if (!empty($qstr)) $str .= '?'.$qstr;
     }
+    if (!empty($this->hash)) $str.='#'.$this->hash;
     return $str;
   }
   
