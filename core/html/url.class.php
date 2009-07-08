@@ -3,8 +3,8 @@
 
 class html_url {
   public $is_absolute; // is the url absolute or relative
-  public $schema; // http/https etc
-  public $host;
+  public $schema; // http/https/mailto/javascript/skype
+  public $host; // makes sence only for http/https
   public $path;
   public $query;
   public $hash;
@@ -21,17 +21,25 @@ class html_url {
     } else {
       $path = $url;
     }
-    if (preg_match('#^([a-z0-9]+)://(.*)$#i',$path,$m)) {
+    if (preg_match('#^(http|https|mailto|javascript|skype):(.*)$#i',$path,$m)) {
       $this->is_absolute = true;
       $this->schema = $m[1];
-      list($host,$path) = explode('/',$m[2],2);
-      $this->host = trim($host,'/');
-      $this->path = trim($path,'/');
+      switch($m[1]) {
+          case 'http':
+          case 'https':
+              $m2 = ltrim($m[2],'/');
+              $vals = explode('/',$m2,2);
+              $this->host = trim($vals[0],'/');
+              $this->path = isset($vals[1])?trim($vals[1],'/'):'';
+              break;
+          default:
+              $this->host = null;
+              $this->path = $m[2];
+      }
     } else {
       $this->is_absolute = false;
       $this->path = $path;
     }
-    //echo "<pre>"; var_dump($this); die();
   }
   
   private function parse_query($query) {
@@ -54,7 +62,14 @@ class html_url {
   
   public function get_url($query_merge=null) {
     if ($this->is_absolute) {
-      $str = "{$this->schema}://{$this->host}/{$this->path}";
+      switch($this->schema) {
+          case 'http':
+          case 'https':
+              $str = "{$this->schema}://{$this->host}/{$this->path}";
+              break;
+          default:
+              $str = "{$this->schema}:{$this->path}";
+      }
       $qstr = $this->query_to_str($query_merge);
       if (!empty($qstr)) $str .= '?'.$qstr;
     } else {
