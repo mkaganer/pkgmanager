@@ -62,16 +62,21 @@ class sql_mysql_filter extends sql_filter {
                 	if ($op=='=') $op='#';
                 	else if ($op=='<>') $op='#!';
                 	if ($op=='#'||$op=='#!') {
-                        $op = ($op=='#')?'in':'not in';
-                        if (!is_array($value)) throw new Exception("Value must be array for # and #!");
-                        $val_list = array();
-                        foreach ($value as $val) {
-                            $val_v = (is_object($val))?$val->__toString():$val;
-                            if ((!is_numeric($val_v)) && (!$raw_val))
-                                $val_v = '"'.$this->link->escape($val_v).'"';
-                            $val_list[] = $val_v;
-                        }
-                        $expr = "$key $op (".implode(",",$val_list).")";
+                	    if (empty($value)) {
+                	        // special case where we get an empty array
+                	        // for "in" always false, for "not in" always true...
+                	        $expr = ($op=='#')?'false':'true';
+                	    } else {
+                            $op = ($op=='#')?'in':'not in';
+                            $val_list = array();
+                            foreach ($value as $val) {
+                                $val_v = (is_object($val))?$val->__toString():$val;
+                                if ((!is_numeric($val_v)) && (!$raw_val))
+                                    $val_v = '"'.$this->link->escape($val_v).'"';
+                                $val_list[] = $val_v;
+                            }
+                            $expr = "$key $op (".implode(",",$val_list).")";
+                	    }
                 	} else
                 	    throw new Exception("Operator '$op' is not supported with array value");
                 } else switch ($op) {
