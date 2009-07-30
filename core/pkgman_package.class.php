@@ -65,11 +65,12 @@ class pkgman_package {
     if (strcspn($class_name,"#=\"\\?*:/@|<>.\$") != strlen($class_name))
       die("Invalid class name: [$class_name]");
     $prefix = $this->prefix;
+    // check if the class belongs to our namespace:
     if (substr($class_name,0,strlen($prefix)) == $prefix)
-      $class_name = substr($class_name,strlen($prefix));
+      $class_name2 = substr($class_name,strlen($prefix));
       else return false;
-    $file = $this->path."/".$class_name.".class.php";
-    //echo "check:$file\n";
+    $file = "{$this->path}/${class_name}.class.php";
+    if (!file_exists($file)) $file = "{$this->path}/${class_name2}.class.php";
     if (!file_exists($file)) return false;
     if (!$test_only) include($file);
     return true;
