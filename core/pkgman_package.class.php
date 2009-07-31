@@ -51,7 +51,16 @@ class pkgman_package {
    */
   public function merge_config($conf) {
     if (!is_array($conf)) return;
-    $this->config = array_merge_recursive($this->config,$conf);
+    //$this->config = array_merge_recursive($this->config,$conf);
+    $my =& $this->config;
+    foreach($conf as $k => $v) {
+    	if (empty($my[$k])) $my[$k] = $v;
+    	elseif (!is_array($my[$k])) $my[$k] = $v;
+    	else {
+    		if (is_array($v)) $my[$k] = array_merge($my[$k],$v);
+    		else $my[$k][] = $v;
+    	}
+    }
   }
 
   /**
