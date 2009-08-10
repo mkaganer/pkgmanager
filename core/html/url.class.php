@@ -60,6 +60,11 @@ class html_url {
     return implode('&',$res);
   }
   
+  /**
+   * @desc Get url as a string
+   * @param $query_merge array
+   * @return string
+   */
   public function get_url($query_merge=null) {
     if ($this->is_absolute) {
       switch($this->schema) {
@@ -85,6 +90,10 @@ class html_url {
     return $this->get_url();
   }
   
+  /**
+   * @param $query_merge array
+   * @return html_url
+   */
   public function clone_url($query_merge=null) {
     $new_url = clone $this;
     if (empty($new_url->query)) $new_url->query = $query_merge;
