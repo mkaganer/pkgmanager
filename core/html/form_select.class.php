@@ -2,6 +2,12 @@
 // B.H.
 
 // $type='select','mradio'
+/**
+ * @desc type='select','mradio' form element.
+ * $param[0] - array('val'=>'text',...)
+ * @author mkaganer
+ *
+ */
 class html_form_select extends html_form_elm {
 
   public $values;
@@ -16,6 +22,7 @@ class html_form_select extends html_form_elm {
       $this->values = $param[0];
       unset($param[0]);
     }
+    if (!empty($param[1])) $this->default_value = $param[1];
     $this->param = $param;
     parent::__construct();
   }
