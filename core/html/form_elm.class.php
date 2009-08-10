@@ -6,6 +6,7 @@ abstract class html_form_elm extends html_element {
   public $type;
   public $name;
   public $param;
+  public $default_value = null;
   
   public function __construct() {
     if (isset($this->param['class'])) $this->attr['class'] = $this->param['class'];
@@ -18,9 +19,9 @@ abstract class html_form_elm extends html_element {
   public function postback_value($method) {
     switch($method) {
     case 'get':
-      return (isset($_GET[$this->name]))?stripslashes($_GET[$this->name]):null;
+      return (isset($_GET[$this->name]))?stripslashes($_GET[$this->name]):$this->default_value;
     case 'post':
-      return (isset($_POST[$this->name]))?stripslashes($_POST[$this->name]):null;
+      return (isset($_POST[$this->name]))?stripslashes($_POST[$this->name]):$this->default_value;
     }
   }
   

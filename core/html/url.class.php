@@ -98,6 +98,16 @@ class html_url {
     $this->host = $host;
     $this->path = ltrim($this->path,'/');
   }
+  
+  /**
+   * @desc Merge the specified values into $this->query array, overriding old values 
+   * @param $new_query array values to be array_merge'd into $this->query
+   * @return void
+   */
+  public function merge_query($new_query) {
+      if (!is_array($this->query)) $this->query = array();
+      $this->query = array_merge($this->query,$new_query);
+  }
 }
 
 ?>
