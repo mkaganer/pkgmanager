@@ -11,7 +11,7 @@ class html_column_buttons extends html_column {
     $this->id_name = $id_name;
   }
   
-  protected function format_data($val) {
+  public function format_data($val) {
     //return "<img src=\"$this->img\" alt=\"\" />";
     $res = '';
     foreach($this->btn_data as $btn) {

@@ -26,10 +26,10 @@ class html_column {
     return $at;
   }
   
-  protected function format_header() {
+  public function format_header() {
     return htmlspecialchars($this->title);
   }
-  protected function format_data($val) {
+  public function format_data($val) {
     return $val;
   }
   
