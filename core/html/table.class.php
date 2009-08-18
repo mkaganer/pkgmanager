@@ -108,6 +108,7 @@ EOT;
         
         // now generate the data 
         foreach ($this->data as $drow) {
+            $this->current_row =& $drow;
             $row = array();
             foreach ($this->columns as $key => $col) {
                 $val = $drow[$key];
