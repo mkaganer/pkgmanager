@@ -11,6 +11,8 @@ class html_table extends html_element {
   public $page_prompt = null; // text label to be put before the pageing <select>
   public $per_page = 10;
   
+  public $render_mode = null; // during render will be set to 'html', 'csv' etc
+  
   // params: html_column instances for each of the table's columns
   public function __construct() {
     parent::__construct('table');
@@ -25,6 +27,7 @@ class html_table extends html_element {
   }
 
   protected function render() {
+    $this->render_mode = 'html';
     if (!empty($this->back_url)&&!empty($this->page_param)) {
       $paging = true;
       $cpage = isset($_GET[$this->page_param])?(int)$_GET[$this->page_param]:0;
@@ -40,7 +43,10 @@ class html_table extends html_element {
     foreach($this->attr as $atk => $atv) $at .= " ${atk}=\"".htmlspecialchars($atv)."\"";
     $res = "<table${at}>";
     $res .= "<tr>";
-    foreach ($this->columns as $col) $res .= $col->render_header();
+    foreach ($this->columns as $col) {
+        $col->parent_table = $this; // ensure the column "knows" his parent
+        $res .= $col->render_header();
+    }
     $res .= "</tr>";
     if (is_array($this->data)) {
       $i = -1;
@@ -74,5 +80,35 @@ EOT;
     return $res;
   }
   
-
+    /**
+     * @desc render the table as CSV formatted data 
+     * @return string
+     */
+    public function render_as_csv() {
+        $this->render_mode = 'csv';
+        $res = '';
+        // generate titles row
+        $row = array();
+        foreach ($this->columns as $col) {
+            $col->parent_table = $this; // ensure the column "knows" his parent
+            $title = str_replace('"','""',$col->title);
+            $row[] = "\"$title\"";
+        }
+        $res .= implode(',',$row)."\n";
+        
+        // now generate the data 
+        foreach ($this->data as $drow) {
+            $row = array();
+            foreach ($this->columns as $key => $col) {
+                $val = $drow[$key];
+                $val = str_replace('"','""',$col->format_data($val));
+                $row[] = "\"$val\"";
+            }
+            $res .= implode(',',$row)."\n";
+        }
+        
+        return $res;
+    }
+    
+  
 }
