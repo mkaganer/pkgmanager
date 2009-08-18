@@ -3,6 +3,8 @@
 
 class html_column {
 
+  public $parent_table = null;
+  
   public $title;
   public $td_attr,$th_attr;
   
