@@ -11,7 +11,16 @@ class html_table extends html_element {
   public $page_prompt = null; // text label to be put before the pageing <select>
   public $per_page = 10;
   
-  public $render_mode = null; // during render will be set to 'html', 'csv' etc
+  /**
+   * @desc during render will be set to 'html', 'csv' etc
+   * @var string
+   */
+  public $render_mode = null;
+  /**
+   * @desc during render, will be set to a reference to the current rendering row
+   * @var array
+   */
+  public $current_row = null;
   
   // params: html_column instances for each of the table's columns
   public function __construct() {
@@ -56,6 +65,7 @@ class html_table extends html_element {
           $p = (int)floor($i/$per_page);
           if ($p!=$cpage) continue;
         }
+        $this->current_row =& $drow;
         $res .= "<tr>";
         foreach ($this->columns as $key => $col) $res .= $col->render_data($i,$row_key,$drow[$key]);
         $res .= "</tr>";
