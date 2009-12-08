@@ -9,6 +9,12 @@
  * @author mkaganer
  */
 class sql_mysql_filter extends sql_filter {
+    
+    /**
+     * @var bool if true, numeric filter value will be put in quotes like strings.
+     * Like 'id' => 123 will return 'id'='123' instead of 'id'=123
+     */
+    public $quoted_numeric = true;
 
     /**
      * @desc Create a filter object with a given filter data
@@ -55,12 +61,18 @@ class sql_mysql_filter extends sql_filter {
                 $key = (empty($this->prefix))?"`$key`":"{$this->prefix}.`$key`";
                 $expr = "";
                 if (is_bool($value)) $value = (int)$value;
-                else if ((!is_numeric($value)) && (!is_array($value)) && (!$raw_val)) {
-                	$value = '"'.$this->link->escape($value).'"';
+                elseif ((!is_array($value)) && (!$raw_val)) {
+                    // false if we have a numeric and should not enclose in quotes
+                    if ($this->quoted_numeric || !is_numeric($value))
+                        $value = "'".$this->link->escape($value)."'";
                 }
+                
                 if (is_array($value)) {
+                    // allowed ops for array values: =,<>,#,#! only
+                    // = and <> with array value are aliases for # and #! (in and not in)
                 	if ($op=='=') $op='#';
-                	else if ($op=='<>') $op='#!';
+                	elseif ($op=='<>') $op='#!';
+                	
                 	if ($op=='#'||$op=='#!') {
                 	    if (empty($value)) {
                 	        // special case where we get an empty array
@@ -71,14 +83,13 @@ class sql_mysql_filter extends sql_filter {
                             $val_list = array();
                             foreach ($value as $val) {
                                 $val_v = (is_object($val))?$val->__toString():$val;
-                                if ((!is_numeric($val_v)) && (!$raw_val))
-                                    $val_v = '"'.$this->link->escape($val_v).'"';
+                                if (!$raw_val && ($this->quoted_numeric || !is_numeric($val_v)))
+                                    $val_v = "'".$this->link->escape($val_v)."'";
                                 $val_list[] = $val_v;
                             }
                             $expr = "$key $op (".implode(",",$val_list).")";
                 	    }
-                	} else
-                	    throw new Exception("Operator '$op' is not supported with array value");
+                	} else throw new Exception("Operator '$op' is not supported with array value");
                 } else switch ($op) {
                 	case '=':
                 	case '>':
