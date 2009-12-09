@@ -16,6 +16,7 @@ $config = array(
     'checkbox' => 'html_form_checkbox',
     'select' => 'html_form_select',
     'mradio' => 'html_form_select',
+    'mselect' => 'html_form_mselect',
     'textarea' => 'html_form_textarea',
     'submit' => 'html_form_submit',
     'image' => 'html_form_image',

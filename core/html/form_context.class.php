@@ -116,7 +116,7 @@ class html_form_context {
           $this->data[$name] = $elm->checked_value;
           break;
         }
-      } else  throw new Exception("Bad control reference!");
+      } else throw new Exception("Bad control reference!");
     }
   }
   

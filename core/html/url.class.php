@@ -56,7 +56,10 @@ class html_url {
     elseif (is_array($query_merge)) $query = array_merge($query,$query_merge);
     if (empty($query)) return '';
     $res = array();
-    foreach ($query as $name => $val) $res[] = $name."=".urlencode($val);
+    foreach ($query as $name => $val) {
+        if (!is_array($val)) $res[] = $name."=".urlencode($val);
+        else foreach ($val as $k1 => $v1) $res[] = "${name}[$k1]=".urlencode($v1);
+    }
     return implode('&',$res);
   }
   
