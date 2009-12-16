@@ -58,7 +58,7 @@ class hcal_lang_output {
     );
     
     public static $week_days_full = array(
-        'he' => array('יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'ום חמישי', 'יום שישי', 'מוצאי ש"ק'),
+        'he' => array('יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'מוצאי ש"ק'),
         'en' => array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'),
     );
     
@@ -132,7 +132,7 @@ class hcal_lang_output {
      * @return string
      */
     public function month_to_str($month, $is_leap) {
-        --$month;
+        $month = intval($month)-1;
         if ($is_leap && (($month==5)||($month==6))) $month += 8;
         $lang = $this->lang;
         if (!isset(self::$heb_months[$lang])) $lang = 'en';
