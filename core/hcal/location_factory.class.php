@@ -20,7 +20,7 @@ class hcal_location_factory {
             $loc_name = $hcal->config['location'];
         }
         if (empty(self::$locations[$loc_name])) return false;
-        return new hcal_location(self::$locations[$loc_name]);
+        return new hcal_location(self::$locations[$loc_name],$loc_name);
     }
     
 }

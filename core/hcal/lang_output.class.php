@@ -57,9 +57,15 @@ class hcal_lang_output {
         ),
     );
     
-    public static $week_days_full = array(
-        'he' => array('יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'מוצאי ש"ק'),
-        'en' => array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'),
+    public static $week_days = array(
+        'full' => array(
+            'he' => array('יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'מוצאי ש"ק'),
+            'en' => array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'),
+        ),
+        'short' => array(
+            'he' => array('יום א\'', 'יום ב\'', 'יום ג\'', 'יום ד\'', 'יום ה\'', 'יום ו\'', 'מוצאי ש"ק'),
+            'en' => array('Sun','Mon','Tue','Wed','Thu','Fri','Sat'),
+        ),
     );
     
     /**
@@ -140,7 +146,10 @@ class hcal_lang_output {
     }
     
     public function weekday_full($weekday_num) {
-        return self::$week_days_full[$this->lang][$weekday_num];
+        return self::$week_days['full'][$this->lang][$weekday_num];
+    }
+    public function weekday($weekday_num,$type) {
+        return self::$week_days[$type][$this->lang][$weekday_num];
     }
     
     public function hebrew_date($data,$is_leap) {

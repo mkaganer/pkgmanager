@@ -88,9 +88,10 @@ class hcal_datetime {
      * If $htimes is not null, specifies hcal_halactic_times object which is used to determine
      * if we're after the sunset and have to increase a day by 1
      * @param hcal_halactic_times $htimes
+     * @param string $weekday type of weekday to add or false for no weekday
      * @return string
      */
-    public function get_hebrew_date($with_weekday=false, $htimes=null) {
+    public function get_hebrew_date($weekday=false, $htimes=null) {
         $jd = $this->jd;
         if (!empty($htimes)) {
             if ($htimes->now >= $htimes->sunset) $jd += 1; // jewish day begins with a sunset!
@@ -98,16 +99,16 @@ class hcal_datetime {
         $data = explode('/',jdtojewish($jd));
         $is_leap = self::is_leap_year($data[2]);
         $res = '';
-        if ($with_weekday) {
-            $res .= $this->lang_output->weekday_full(($jd+1) % 7).', ';
+        if ($weekday) {
+            $res .= $this->lang_output->weekday(($jd+1) % 7,$weekday).', ';
         }
         $res .= $this->lang_output->hebrew_date($data,$is_leap);
         return $res;
     }
     
-    public function get_weekday() {
+    public function get_weekday($type='full') {
         $wd = ($this->jd+1) % 7;
-        return $this->lang_output->weekday_full($wd);
+        return $this->lang_output->weekday($wd,$type);
     }
     
     /**
