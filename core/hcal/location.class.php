@@ -16,11 +16,14 @@ class hcal_location {
     
     public $latitude;
     public $longitude;
+    
+    public $loc_name;
 
     /**
      * @param array $location_info
      */
-    public function __construct($location_info) {
+    public function __construct($location_info,$loc_name=null) {
+        $this->loc_name = $loc_name;
         if (empty($location_info['lat'])||empty($location_info['long'])||
             empty($location_info['tz'])) throw new Exception('Location info is wrong');
         $this->latitude = (float)$location_info['lat'];
