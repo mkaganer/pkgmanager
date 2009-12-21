@@ -132,23 +132,17 @@ class hcal_datetime {
      * @return hcal_halactic_times
      */
     public function get_htimes() {
-        $zenith = 90.0 + 50.0/60;
-        $lat = $this->location->latitude;
-        $long = $this->location->longitude;
         $ts = $this->get_ts(false);
         $tz_offset = $this->get_timezone_offset();
         $ts -= $tz_offset;
         $gmt_offset = $tz_offset / 3600.0;
-        $sunrise = date_sunrise($ts, SUNFUNCS_RET_DOUBLE, $lat, $long, $zenith, $gmt_offset);
-        $sunset = date_sunset($ts, SUNFUNCS_RET_DOUBLE, $lat, $long, $zenith, $gmt_offset);
-        $rel_hour = ($sunset-$sunrise)/12.0;
         
         $now = $this->h + ($this->m/60.0) + ($this->s)/3600.0;
         $jd = $this->jd;
         if ($now >= $sunset) $jd += 1; // jewish day begins with a sunset!
         $heb_date = explode('/',jdtojewish($jd));
         
-        $htimes = new hcal_halactic_times($heb_date,$sunrise,$sunset,$rel_hour,$now);
+        $htimes = new hcal_halactic_times($heb_date, $ts, $gmt_offset, $this->location, $now);
         return $htimes;
     }
     

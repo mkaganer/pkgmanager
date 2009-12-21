@@ -18,6 +18,8 @@ class hcal_location {
     public $longitude;
     
     public $loc_name;
+    
+    public $data;
 
     /**
      * @param array $location_info
@@ -29,6 +31,7 @@ class hcal_location {
         $this->latitude = (float)$location_info['lat'];
         $this->longitude = (float)$location_info['long'];
         $this->timezone = new DateTimeZone($location_info['tz']);
+        $this->data = $location_info;
     }
     
 }
