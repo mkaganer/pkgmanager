@@ -44,12 +44,18 @@ class hcal_halactic_times {
      */
     public $data;
     
-    public function __construct($heb_date, $ts, $gmt_offset, $location, $now) {
+    /**
+     * @var hcal_datetime
+     */
+    public $datetime;
+    
+    public function __construct($heb_date, $ts, $gmt_offset, $location, $now, $datetime =  null) {
         $zenith = 90.0 + 50.0/60;
         $this->heb_date = $heb_date;
         $this->location = $location;
         $this->now = $now;
         $this->data = array();
+        $this->datetime = $datetime;
         
         $lat = $location->latitude;
         $long = $location->longitude;
