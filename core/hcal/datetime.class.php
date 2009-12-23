@@ -11,15 +11,15 @@ class hcal_datetime {
     /**
      * @var int
      */
-    private $jd;
+    public $jd;
     
     // the time is stored in a local time zone
-    private $h,$m,$s;
+    public $h,$m,$s;
     
     /**
      * @var hcal_location
      */
-    private $location;
+    public $location;
     
     /**
      * @var hcal_lang_output
@@ -51,6 +51,15 @@ class hcal_datetime {
     
     public function get_jd() {
         return $this->jd;
+    }
+    
+    /**
+     * @desc move the date in the object $dd days forward/backward
+     * @param int $dd
+     * @return void
+     */
+    public function move_days($dd) {
+        $this->jd += $dd;
     }
     
     /**
