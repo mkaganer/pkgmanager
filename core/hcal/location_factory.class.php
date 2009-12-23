@@ -11,6 +11,7 @@ class hcal_location_factory {
             'nerot' => 40 ),
         'tzfat' => array('lat'=> 32.9833333333, 'long'=>35.483333333, 'tz'=>'Asia/Jerusalem' ),
         'tel_aviv' => array('lat' => 32.05, 'long' => 34.75, 'tz'=>'Asia/Jerusalem' ),
+        'bney_brak' => array('lat' => 32.05, 'long' => 34.75, 'tz'=>'Asia/Jerusalem' ),
         'beer_sheva' => array('lat' => 31.25, 'long' => 34.783333333, 'tz'=>'Asia/Jerusalem' ),
         'new_york' => array('lat' => 40.66909166667, 'long' => -73.94282222222, 'tz'=>'America/New_York' ),
     );
