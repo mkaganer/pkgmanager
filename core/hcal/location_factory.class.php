@@ -13,6 +13,9 @@ class hcal_location_factory {
         'tel_aviv' => array('lat' => 32.05, 'long' => 34.75, 'tz'=>'Asia/Jerusalem' ),
         'bney_brak' => array('lat' => 32.05, 'long' => 34.75, 'tz'=>'Asia/Jerusalem' ),
         'beer_sheva' => array('lat' => 31.25, 'long' => 34.783333333, 'tz'=>'Asia/Jerusalem' ),
+        'eilat' => array('lat' => 29.554167, 'long' => 34.948056, 'tz'=>'Asia/Jerusalem' ),
+        'beitar_elit' => array('lat' => 31.697222, 'long' => 35.1225, 'tz'=>'Asia/Jerusalem' ),
+        'haifa' => array('lat' => 32.826945, 'long' => 34.97694, 'tz'=>'Asia/Jerusalem' ),
         'new_york' => array('lat' => 40.66909166667, 'long' => -73.94282222222, 'tz'=>'America/New_York' ),
     );
     
