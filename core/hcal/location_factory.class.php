@@ -11,7 +11,7 @@ class hcal_location_factory {
             'nerot' => 40 ),
         'tzfat' => array('lat'=> 32.9833333333, 'long'=>35.483333333, 'tz'=>'Asia/Jerusalem' ),
         'tel_aviv' => array('lat' => 32.05, 'long' => 34.75, 'tz'=>'Asia/Jerusalem' ),
-        'bney_brak' => array('lat' => 32.05, 'long' => 34.75, 'tz'=>'Asia/Jerusalem' ),
+        'bney_brak' => array('lat' => 32.0783333, 'long' => 34.8422222, 'tz'=>'Asia/Jerusalem' ),
         'beer_sheva' => array('lat' => 31.25, 'long' => 34.783333333, 'tz'=>'Asia/Jerusalem' ),
         'eilat' => array('lat' => 29.554167, 'long' => 34.948056, 'tz'=>'Asia/Jerusalem' ),
         'beitar_elit' => array('lat' => 31.697222, 'long' => 35.1225, 'tz'=>'Asia/Jerusalem' ),
