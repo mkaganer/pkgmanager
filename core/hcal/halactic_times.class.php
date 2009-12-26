@@ -163,6 +163,17 @@ class hcal_halactic_times {
         return $data;
     }
     
-    
+    /**
+     * @desc Check if the current time is forbidden to do "melachah": Shabbat or Yom Tov
+     * @return bool
+     */
+    public function is_kodesh() {
+        $jd = $this->datetime->jd;
+        if ($this->now >= $this->sunset) $jd += 1; 
+        $wd = ($jd + 1) % 7;
+        if ($wd==6) return true;
+        // TODO: take care of Yom Tov, also
+        return false;
+    }
     
 }
