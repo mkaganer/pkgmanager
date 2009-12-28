@@ -63,12 +63,12 @@ class hcal_halactic_times {
      */
     private static $kodesh_dates = array(
         'eretz' => array(
-            '1/1', '1/2', '1/15', '1/22', // Tishrey festivals
+            '1/1', '1/2', '1/10', '1/15', '1/22', // Tishrey festivals
             '8/15', '8/21', // Pesach
             '10/6' // Shavuot
         ),
         'chul' => array(
-            '1/1', '1/2', '1/15', '1/16', '1/22', '1/23', // Tishrey festivals
+            '1/1', '1/2', '1/10', '1/15', '1/16', '1/22', '1/23', // Tishrey festivals
             '8/15', '8/16', '8/21', '8/22', // Pesach
             '10/6', '10/7' // Shavuot
         ),
