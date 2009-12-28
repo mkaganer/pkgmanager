@@ -33,6 +33,12 @@ class hcal_halactic_times {
     public $location;
     
     /**
+     * @desc true if chutz laaretz
+     * @var bool
+     */
+    public $is_chul;
+    
+    /**
      * @desc base values for times calculations in float format
      * @var array (float)
      */
@@ -48,6 +54,25 @@ class hcal_halactic_times {
      * @var hcal_datetime
      */
     public $datetime;
+    
+    /**
+     * @desc Hebrew dates when is_kodesh will be true format: 'month/day'
+     * 'eretz' is Eretz Israel (ארץ ישראל)
+     * 'chul' is Chuts laaretz (חוץ לארץ)
+     * @var array(string)
+     */
+    private static $kodesh_dates = array(
+        'eretz' => array(
+            '1/1', '1/2', '1/15', '1/22', // Tishrey festivals
+            '8/15', '8/21', // Pesach
+            '10/6' // Shavuot
+        ),
+        'chul' => array(
+            '1/1', '1/2', '1/15', '1/16', '1/22', '1/23', // Tishrey festivals
+            '8/15', '8/16', '8/21', '8/22', // Pesach
+            '10/6', '10/7' // Shavuot
+        ),
+    );
     
     public function __construct($heb_date, $ts, $gmt_offset, $location, $now, $datetime =  null) {
         $zenith = 90.0 + 50.0/60;
@@ -65,6 +90,7 @@ class hcal_halactic_times {
         $this->sunrise = $sunrise;
         $this->sunset = $sunset;
         $this->rel_hr = ($sunset - $sunrise)/12.0;
+        $this->is_chul = (bool)@$this->location->data['chul'];
         
         $this->calculate_base_times();
     }
@@ -163,16 +189,33 @@ class hcal_halactic_times {
         return $data;
     }
     
+    private function is_jd_kodesh($jd) {
+        $wd = ($jd + 1) % 7;
+        if ($wd==6) return true; // Shabbes
+        $d = explode('/',jdtojewish($jd));
+        $d = intval($d[0]).'/'.intval($d[1]);
+        $chul = $this->is_chul?'chul':'eretz';
+        if (in_array($d,self::$kodesh_dates[$chul])) return true;
+        return false;
+    }
+    
     /**
      * @desc Check if the current time is forbidden to do "melachah": Shabbat or Yom Tov
      * @return bool
      */
     public function is_kodesh() {
         $jd = $this->datetime->jd;
-        if ($this->now >= $this->sunset) $jd += 1; 
-        $wd = ($jd + 1) % 7;
-        if ($wd==6) return true;
-        // TODO: take care of Yom Tov, also
+        if ($this->now >= $this->sunset) $jd += 1;
+        echo $this->format($this->now);
+        if ($this->is_jd_kodesh($jd)) return true;
+        // check "Tosefet Shabbat" 18 minutes before
+        if (($this->now < $this->sunset) && ($this->now >= ($this->sunset-18.0/60.0))) {
+            if ($this->is_jd_kodesh($jd+1)) return true;
+        }
+        // check "Tosefet Shabbat" 40 minutes after
+        if (($this->now > $this->sunset) && ($this->now <= ($this->sunset+40.0/60.0))) {
+            if ($this->is_jd_kodesh($jd-1)) return true;
+        }
         return false;
     }
     
