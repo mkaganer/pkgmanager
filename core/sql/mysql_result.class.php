@@ -23,6 +23,10 @@ class sql_mysql_result extends sql_result {
   public function __destruct() {
   	mysql_free_result($this->result);
   }
+  
+  public function get_raw_result() {
+      return $this->result;
+  }
 
   function num_rows() {
   	return mysql_num_rows($this->result);
