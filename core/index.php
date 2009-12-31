@@ -28,16 +28,27 @@ if (version_compare("5.0.0",PHP_VERSION,">")) die("PkgMan requires PHP5 or later
 
 define("_PKGMAN_ROOT",rtrim(dirname(__FILE__),"\\/"));
 
+// if true, will use spl_autoload_register(), else will define __autoload functions
+if (!defined('_PKGMAN_USE_SPL_AUTOLOAD')) define("_PKGMAN_USE_SPL_AUTOLOAD", true);
+
 require(_PKGMAN_ROOT."/pkgman_manager.class.php");
 require(_PKGMAN_ROOT."/pkgman_package.class.php");
 
 /* @var pkgman_manager */
 $_pkgman = pkgman_manager::get_instance();
 
-// TODO: Make use of register_autoload() to enable cooperaton with another autoload-based frameworks
-// "magic" PHP function that will be called every time when PHP cannot find required class
-function __autoload($class) {
-  global $_pkgman;
-  $_pkgman->load_class($class);
+if (_PKGMAN_USE_SPL_AUTOLOAD) {
+    
+    function _pkgman_autoload($class) {
+      global $_pkgman;
+      $_pkgman->load_class($class);
+    }
+    
+    spl_autoload_register('_pkgman_autoload');
+} else {
+    // if not using spl_autoload
+    function __autoload($class) {
+      global $_pkgman;
+      $_pkgman->load_class($class);
+    }
 }
-?>
