@@ -65,6 +65,8 @@ class sql_mysqli_connection extends sql_connection {
    */
   public function query($query) {
     global $_trace_log;
+    // render query object if needed and implicitly convert to a string (PHP >=5.2 needed!)
+    $query = ($query instanceof sql_query)?$query->render():((string)$query);
     if (defined('_TRACE_QUERIES')&&empty($_trace_log)) $_trace_log = new utils_microtimer();
     $snap = microtime();
     $mode = $this->config['buffered']?MYSQLI_STORE_RESULT:MYSQLI_USE_RESULT;

@@ -25,6 +25,9 @@ $config = array(
   ),
 
   'default_model_provider' => 'sql_model_provider',
+  
+  // see sql_query parameters substitution
+  'global_params' => array('table_prefix' => 'test_'),
 
 );
 
