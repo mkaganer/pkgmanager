@@ -44,7 +44,7 @@ class sql_mysql_connection extends sql_connection {
 
     if (!empty($config['link']))
       $link = $config['link'];
-      else $link = mysql_connect($config['host'],$config['user'],$config['pass'],
+      else $link = @mysql_connect($config['host'],$config['user'],$config['pass'],
                                  $config['new_link']);
     if (!$link) throw new Exception("mysql connection failed!");
     $this->link = $link;
