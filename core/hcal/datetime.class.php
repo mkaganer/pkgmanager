@@ -148,7 +148,7 @@ class hcal_datetime {
         
         $now = $this->h + ($this->m/60.0) + ($this->s)/3600.0;
         $jd = $this->jd;
-        if ($now >= $sunset) $jd += 1; // jewish day begins with a sunset!
+        //if ($now >= $sunset) $jd += 1; // jewish day begins with a sunset!
         $heb_date = explode('/',jdtojewish($jd));
         
         $htimes = new hcal_halactic_times($heb_date, $ts, $gmt_offset, $this->location, $now, $this);
