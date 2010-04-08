@@ -206,7 +206,7 @@ class hcal_halactic_times {
     public function is_kodesh() {
         $jd = $this->datetime->jd;
         if ($this->now >= $this->sunset) $jd += 1;
-        echo $this->format($this->now);
+        //echo $this->format($this->now);
         if ($this->is_jd_kodesh($jd)) return true;
         // check "Tosefet Shabbat" 18 minutes before
         if (($this->now < $this->sunset) && ($this->now >= ($this->sunset-18.0/60.0))) {
@@ -218,5 +218,46 @@ class hcal_halactic_times {
         }
         return false;
     }
+    
+    /**
+     * @desc Returns current Sfirat HaOmer count or 0 if not in Sfirat HaOmer
+     * @return int
+     */
+    public function get_omer() {
+        $jd = $this->datetime->jd;
+        if ($this->now >= $this->sunset) $jd += 1;
+        // Get the JD of 15 Nisan of the current year
+        $omer_jd = jewishtojd(8,15,$this->heb_date[2]);
+        $omer_cnt = $jd - $omer_jd;
+        if (($omer_cnt<1) || ($omer_cnt>49)) return 0;
+        return $omer_cnt;
+    }
+    
+    /**
+     * @desc Return Omer's count as Hebrew text according to Nusach Ari
+     * @return string of false if not in Sfirat HaOmer 
+     */
+    public function get_omer_txt() {
+        $omer_cnt = $this->get_omer();
+        if ($omer_cnt<1) return false;
+        
+        $omer_cnt_mod = $omer_cnt % 7;
+        $omer_week = intval($omer_cnt / 7);
+        
+        if ($omer_cnt==1) $omer_txt = "היום יום 1 לעומר";
+        elseif ($omer_cnt<7) $omer_txt = "היום $omer_cnt ימים לעומר";
+        else {
+            $yom = ($omer_cnt<11)?"ימים":
+                "יום";
+            $shavua = ($omer_week==1)?"שבוע 1":
+                "$omer_week שבועות";
+            $omer_txt = "היום $omer_cnt $yom שהם $shavua";
+            if ($omer_cnt_mod==1) $omer_txt .= " ויום 1";
+            elseif ($omer_cnt_mod>1) $omer_txt .= " ו-$omer_cnt_mod ימים";
+            $omer_txt .= " לעומר";
+        }
+        return $omer_txt;
+    }
+    
     
 }
