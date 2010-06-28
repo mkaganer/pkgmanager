@@ -41,12 +41,29 @@ class hcal_datetime {
         $this->set_strtotime($strtime);
     }
     
+    public function set_lang($lang=null) {
+        if (empty($lang)) $this->lang_output = hcal_lang_output::get_default();
+        elseif ($lang instanceof hcal_lang_output) $this->lang_output = $lang;
+        else $this->lang_output = new hcal_lang_output($lang);
+    } 
+    
     public function set_strtotime($str) {
         $datetime = new DateTime($str,$this->location->timezone);
         $data = explode('|',$datetime->format('Y|n|j|G|i|s'));
         foreach($data as $i => $_d) $data[$i] = intval(ltrim($_d,'0'));
-        $this->h = $data[3]; $this->m = $data[4]; $this->s = $data[5];
+        $this->h = intval($data[3]); $this->m = intval($data[4]); $this->s = intval($data[5]);
         $this->jd = gregoriantojd($data[1],$data[2],$data[0]);
+    }
+    
+    public function set_hebrew_date_numeric($hd) {
+        $is_leap = self::is_leap_year($hd[2]);
+        if ((($hd[0]==6)||($hd[0]==7))||($hd[0]==14)||($hd[0]==15)) {
+            if (!$is_leap) $hd[0] = 6;
+            elseif ($hd[0]==15) $hd[0] = 7;
+            else $hd[0] = 6;
+        }
+        $jd = jewishtojd($hd[0],$hd[1],$hd[2]);
+        if ($jd>0) $this->jd = $jd; 
     }
     
     public function get_jd() {
@@ -92,26 +109,33 @@ class hcal_datetime {
         return $dt->format($format);
     }
     
-    /**
-     * @desc Return a date as a Hebrew date in Jewish calendar
-     * If $htimes is not null, specifies hcal_halactic_times object which is used to determine
-     * if we're after the sunset and have to increase a day by 1
-     * @param hcal_halactic_times $htimes
-     * @param string $weekday type of weekday to add or false for no weekday
-     * @return string
-     */
-    public function get_hebrew_date($weekday=false, $htimes=null) {
+    
+    public function get_hebrew_date_numeric($htimes=null) {
         $jd = $this->jd;
         if (!empty($htimes)) {
             if ($htimes->now >= $htimes->sunset) $jd += 1; // jewish day begins with a sunset!
         }
         $data = explode('/',jdtojewish($jd));
         $is_leap = self::is_leap_year($data[2]);
+        if ($is_leap && (($data[0]==6)||($data[0]==7))) $data[0] += 8;
+        return $data;
+    }
+    
+    /**
+     * @desc Return a date as a Hebrew date in Jewish calendar
+     * If $htimes is not null, specifies hcal_halactic_times object which is used to determine
+     * if we're after the sunset and have to increase a day by 1
+     * @param hcal_halactic_times $htimes
+     * @param string $weekday type of weekday to add or null for no weekday ('full'|'short')
+     * @return string
+     */
+    public function get_hebrew_date($weekday=null, $htimes=null) {
+        $data = $this->get_hebrew_date_numeric($htimes);
         $res = '';
         if ($weekday) {
             $res .= $this->lang_output->weekday(($jd+1) % 7,$weekday).', ';
         }
-        $res .= $this->lang_output->hebrew_date($data,$is_leap);
+        $res .= $this->lang_output->hebrew_date($data);
         return $res;
     }
     

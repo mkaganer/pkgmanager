@@ -134,12 +134,10 @@ class hcal_lang_output {
     
     /**
      * @param int $month
-     * @param bool $is_leap
      * @return string
      */
-    public function month_to_str($month, $is_leap) {
+    public function month_to_str($month) {
         $month = intval($month)-1;
-        if ($is_leap && (($month==5)||($month==6))) $month += 8;
         $lang = $this->lang;
         if (!isset(self::$heb_months[$lang])) $lang = 'en';
         return self::$heb_months[$lang][$month];
@@ -152,9 +150,9 @@ class hcal_lang_output {
         return self::$week_days[$type][$this->lang][$weekday_num];
     }
     
-    public function hebrew_date($data,$is_leap) {
+    public function hebrew_date($data) {
         $year = $this->num_to_hebrew($data[2]);
-        $month = $this->month_to_str($data[0],$is_leap);
+        $month = $this->month_to_str($data[0]);
         $day = $this->num_to_hebrew($data[1]);
         if ($this->lang=='he') return "$day ב$month $year";
         else return "$day $month $year";

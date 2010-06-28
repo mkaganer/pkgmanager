@@ -16,7 +16,9 @@ class hcal_location_factory {
         'eilat' => array('lat' => 29.554167, 'long' => 34.948056, 'tz'=>'Asia/Jerusalem',
             'chul' => false ),
         // (see http://www.adathisraelshul.org/rabbis-study/chagim/78-passover/211-the-halachic-status-of-eilat.html)
+
         'beitar_elit' => array('lat' => 31.697222, 'long' => 35.1225, 'tz'=>'Asia/Jerusalem' ),
+        'gush_etzion' => array('lat' => 31.697222, 'long' => 35.1225, 'tz'=>'Asia/Jerusalem' ),
         'modiin_ilit' => array('lat' => 31.931667, 'long' => 35.043056, 'tz'=>'Asia/Jerusalem' ),
         'ashdod' => array('lat' => 31.7880556, 'long' => 34.64277778, 'tz'=>'Asia/Jerusalem' ),
         'tiberias' => array('lat' => 32.7863889, 'long' => 35.5425, 'tz'=>'Asia/Jerusalem' ),
