@@ -133,7 +133,7 @@ class hcal_datetime {
         $data = $this->get_hebrew_date_numeric($htimes);
         $res = '';
         if ($weekday) {
-            $res .= $this->lang_output->weekday(($jd+1) % 7,$weekday).', ';
+            $res .= $this->lang_output->weekday(($this->jd+1) % 7,$weekday).', ';
         }
         $res .= $this->lang_output->hebrew_date($data);
         return $res;
