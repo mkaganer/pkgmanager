@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- B.H. -->
+<location_data>
+<countries>
+    <country id="IL">
+        <name lang="he">ירשאל</name>
+        <name lang="en">Israel</name>
+    </country>
+    <country id="US">
+        <name lang="he">ארה"ב</name>
+        <name lang="en">United States</name>
+    </country>
+</countries>
+<locations>
+    <location id="IL/Jerusalem" lat="31.766667" lon="35.233333" tz="Asia/Jerusalem" nerot="40">
+        <name lang="he">ירושלים</name>
+        <name lang="en">Jerusalem</name>
+    </location>
+    <location id="IL/Tzfat" lat="32.983333" lon="35.483333" tz="Asia/Jerusalem">
+        <name lang="he">צפת</name>
+        <name lang="en">Tzfat</name>
+    </location>
+    <location id="IL/Kiryat_Shmona" lat="33.206667" lon="35.570000" tz="Asia/Jerusalem">
+        <name lang="he">קרית שמונה</name>
+        <name lang="en">Kiryat Shmona</name>
+    </location>
+    <location id="IL/Natzrat_Ilit" lat="32.711111" lon="35.324722" tz="Asia/Jerusalem">
+        <name lang="he">נצרת עילית</name>
+        <name lang="en">Natzrat Ilit</name>
+    </location>
+    <location id="IL/Mitzpeh_Ramon" lat="30.610000" lon="34.801944" tz="Asia/Jerusalem">
+        <name lang="he">מצפה רמון</name>
+        <name lang="en">Mitzpeh Ramon</name>
+    </location>
+    <location id="IL/Dimona" lat="31.069166" lon="35.033333" tz="Asia/Jerusalem">
+        <name lang="he">דימונה</name>
+        <name lang="en">Dimona</name>
+    </location>
+    <location id="IL/Sderot" lat="31.522777" lon="34.595277" tz="Asia/Jerusalem">
+        <name lang="he">שדרות</name>
+        <name lang="en">Sderot</name>
+    </location>
+    <location id="IL/Kiryat_Gat" lat="31.611111" lon="34.768333" tz="Asia/Jerusalem">
+        <name lang="he">קרית גת</name>
+        <name lang="en">Kiryat Gat</name>
+    </location>
+    <location id="IL/Rechovot" lat="31.892500" lon="34.811111" tz="Asia/Jerusalem">
+        <name lang="he">רחובות</name>
+        <name lang="en">Rechovot</name>
+    </location>
+    <location id="IL/Hebron" lat="31.524444" lon="35.111111" tz="Asia/Jerusalem">
+        <name lang="he">חברון</name>
+        <name lang="en">Hebron</name>
+    </location>
+    <location id="IL/Hadera" lat="32.442777" lon="34.920833" tz="Asia/Jerusalem">
+        <name lang="he">חדרה</name>
+        <name lang="en">Hadera</name>
+    </location>
+    <location id="IL/Afula" lat="32.610277" lon="35.287777" tz="Asia/Jerusalem">
+        <name lang="he">עפולה</name>
+        <name lang="en">Afula</name>
+    </location>
+    <location id="IL/Netanya" lat="32.321388" lon="34.853055" tz="Asia/Jerusalem">
+        <name lang="he">נתניה</name>
+        <name lang="en">Netanya</name>
+    </location>
+    <location id="IL/Ashkelon" lat="31.665833" lon="34.559444" tz="Asia/Jerusalem">
+        <name lang="he">אשקלון</name>
+        <name lang="en">Ashkelon</name>
+    </location>
+    <!--
+    <location id="IL/Jericho" lat="31.856944" lon="35.460555" tz="Asia/Jerusalem">
+        <name lang="he">יריחו</name>
+        <name lang="en">Jericho</name>
+    </location>
+    -->
+    <location id="IL/Beit_Shemesh" lat="31.745555" lon="34.986388" tz="Asia/Jerusalem">
+        <name lang="he">בית שמש</name>
+        <name lang="en">Beit Shemesh</name>
+    </location>
+    <location id="IL/Tel_Aviv" lat="32.050000" lon="34.750000" tz="Asia/Jerusalem">
+        <name lang="he">תל-אביב</name>
+        <name lang="en">Tel Aviv</name>
+    </location>
+    <location id="IL/Bney_Brak" lat="32.078333" lon="34.842222" tz="Asia/Jerusalem">
+        <name lang="he">בני ברק</name>
+        <name lang="en">Bney Brak</name>
+    </location>
+    <location id="IL/Beer_Sheva" lat="31.250000" lon="34.783333" tz="Asia/Jerusalem">
+        <name lang="he">באר שבע</name>
+        <name lang="en">Beer Sheva</name>
+    </location>
+    <location id="IL/Eilat" lat="29.554167" lon="34.948056" tz="Asia/Jerusalem">
+        <name lang="he">אילת</name>
+        <name lang="en">Eilat</name>
+    </location>
+    <location id="IL/Beitar_Ilit" lat="31.697222" lon="35.122500" tz="Asia/Jerusalem">
+        <name lang="he">ביתר עילית</name>
+        <name lang="en">Beitar Ilit</name>
+    </location>
+    <location id="IL/Efrat" lat="31.653333" lon="35.149722" tz="Asia/Jerusalem">
+        <name lang="he">אפרת</name>
+        <name lang="en">Efrat</name>
+    </location>
+    <location id="IL/Modiin_Ilit" lat="31.931667" lon="35.043056" tz="Asia/Jerusalem">
+        <name lang="he">מודיעין עילית</name>
+        <name lang="en">Modiin Ilit</name>
+    </location>
+    <location id="IL/Ashdod" lat="31.788056" lon="34.642777" tz="Asia/Jerusalem">
+        <name lang="he">אשדוד</name>
+        <name lang="en">Ashdod</name>
+    </location>
+    <location id="IL/Tiberias" lat="32.786388" lon="35.542500" tz="Asia/Jerusalem">
+        <name lang="he">טבריה</name>
+        <name lang="en">Tiberias</name>
+    </location>
+    <location id="IL/Haifa" lat="32.826945" lon="34.97694" tz="Asia/Jerusalem">
+        <name lang="he">חיפה</name>
+        <name lang="en">Haifa</name>
+    </location>
+    <location id="IL/Ariel" lat="32.094692" lon="35.162799" tz="Asia/Jerusalem">
+        <name lang="he">אריאל</name>
+        <name lang="en">Ariel</name>
+    </location>
+    <location id="IL/Itamar" lat="32.173611" lon="35.308055" tz="Asia/Jerusalem">
+        <name lang="he">איתמר</name>
+        <name lang="en">Itamar</name>
+    </location>
+    <location id="IL/Kdumim" lat="32.212222" lon="35.157222" tz="Asia/Jerusalem">
+        <name lang="he">קדומים</name>
+        <name lang="en">Kdumim</name>
+    </location>
+    <location id="IL/Imanuel" lat="32.160555" lon="35.136388" tz="Asia/Jerusalem">
+        <name lang="he">עמנואל</name>
+        <name lang="en">Imanuel</name>
+    </location>
+    <location id="IL/Arad" lat="31.261389" lon="35.214722" tz="Asia/Jerusalem">
+        <name lang="he">ערד</name>
+        <name lang="en">Arad</name>
+    </location>
+    <location id="IL/Acre" lat="32.933055" lon="35.082222" tz="Asia/Jerusalem">
+        <name lang="he">עכו</name>
+        <name lang="en">Acre</name>
+    </location>
+    <location id="IL/Nahariya" lat="33.011111" lon="35.094444" tz="Asia/Jerusalem">
+        <name lang="he">נהריה</name>
+        <name lang="en">Nahariya</name>
+    </location>
+    <location id="IL/Carmiel" lat="32.915555" lon="35.293888" tz="Asia/Jerusalem">
+        <name lang="he">כרמיאל</name>
+        <name lang="en">Carmiel</name>
+    </location>
+    <location id="US/NY/New_York" lat="40.669091" lon="-73.942822" tz="America/New_York" chul="1">
+        <name lang="he">ניו-יורק</name>
+        <name lang="en">New York, NY</name>
+    </location>
+</locations>
+</location_data>
