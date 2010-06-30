@@ -145,7 +145,9 @@ class hcal_halactic_times {
         $data = array();
         $data['sunrise'] = $this->format($this->sunrise);
         $data['sunset'] = $this->format($this->sunset);
+        $data['rel_hr'] = $this->format($rel_hr);
         $data['amud72'] = $this->format($this->_base['amud72']+3*$mn);
+        $data['amud90'] = $this->format($this->_base['amud90']);
         $data['amud120'] = $this->format($this->_base['amud120']);
         $data['tzet24'] = $this->format($this->_base['tzet24']);
         $data['tzet18'] = $this->format($this->_base['tzet18']);
