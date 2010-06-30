@@ -123,9 +123,9 @@ class hcal_datetime {
     
     /**
      * @desc Return a date as a Hebrew date in Jewish calendar
-     * If $htimes is not null, specifies hcal_halactic_times object which is used to determine
+     * If $htimes is not null, specifies hcal_halachic_times object which is used to determine
      * if we're after the sunset and have to increase a day by 1
-     * @param hcal_halactic_times $htimes
+     * @param hcal_halachic_times $htimes
      * @param string $weekday type of weekday to add or null for no weekday ('full'|'short')
      * @return string
      */
@@ -147,13 +147,25 @@ class hcal_datetime {
     /**
      * @return int time offset from GMT in seconds
      */
-    public function get_timezone_offset() {
-        $datetime = new DateTime($this->get_sql_datetime(),$this->location->timezone);
-        $loc_offset = $this->location->timezone->getOffset($datetime);
+    public function get_timezone_offset(&$is_dst=null) {
+        $tz = $this->location->timezone;
+        $datetime = new DateTime($this->get_sql_datetime(),$tz);
+        $loc_offset = $tz->getOffset($datetime);
+        if (!is_null($is_dst)) {
+            $y = intval($datetime->format('Y'));
+            $datetime->setDate($y,1,1);
+            $loc_off_1jan = $tz->getOffset($datetime);
+            $is_dst = ($loc_offset!=$loc_off_1jan);
+        }
         return $loc_offset;
     }
     
+    /**
+     * @desc Return true if the given Hebrew year is "leap" (has 13 months)
+     * @param int $y
+     */
     public static function is_leap_year($y) {
+        // This formula is working, trust me 8-)
         return ((intval($y)*7+1) % 19)<7;
     }
     
@@ -162,21 +174,10 @@ class hcal_datetime {
      * @desc Calulate sunrise and sunset for the given date and location and create an object
      * that's responsible for calculating halactic times for the given date
      * All hours calculated in the local time zone specified by $this->location
-     * @return hcal_halactic_times
+     * @return hcal_halachic_times
      */
     public function get_htimes() {
-        $ts = $this->get_ts(false);
-        $tz_offset = $this->get_timezone_offset();
-        $ts -= $tz_offset;
-        $gmt_offset = $tz_offset / 3600.0;
-        
-        $now = $this->h + ($this->m/60.0) + ($this->s)/3600.0;
-        $jd = $this->jd;
-        //if ($now >= $sunset) $jd += 1; // jewish day begins with a sunset!
-        $heb_date = explode('/',jdtojewish($jd));
-        
-        $htimes = new hcal_halactic_times($heb_date, $ts, $gmt_offset, $this->location, $now, $this);
-        return $htimes;
+        return new hcal_halachic_times($this);
     }
     
 }

@@ -95,6 +95,9 @@ class hcal_location_provider_xml extends hcal_location_provider {
             if (isset($this->countries[$c])) $c = $this->countries[$c];
             $locs[$c][$id] = $loc['name'];
         }
+        if ($sort) {
+            foreach (array_keys($locs) as $c) asort($locs[$c]);
+        }
         return $locs;
     }
 

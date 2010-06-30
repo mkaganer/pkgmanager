@@ -1,7 +1,7 @@
 <?php
 // B.H.
 
-class hcal_halactic_times {
+class hcal_halachic_times {
     
     /**
      * @var float
@@ -15,6 +15,7 @@ class hcal_halactic_times {
      * @var float
      */
     public $rel_hr;
+    
     /**
      * @desc Current time (set by hcal_datetime's h,m,s properties) in float hours
      * @var float
@@ -31,6 +32,16 @@ class hcal_halactic_times {
      * @var hcal_location
      */
     public $location;
+    
+    /**
+     * @var float Time offset from the GMT in hours
+     */
+    public $gmt_offset;
+    
+    /**
+     * @var bool True if daylight saving time is on for the current timezone/date
+     */
+    public $is_dst;
     
     /**
      * @desc true if chutz laaretz
@@ -74,18 +85,31 @@ class hcal_halactic_times {
         ),
     );
     
-    public function __construct($heb_date, $ts, $gmt_offset, $location, $now, $datetime =  null) {
-        $zenith = 90.0 + 50.0/60;
-        $this->heb_date = $heb_date;
-        $this->location = $location;
-        $this->now = $now;
-        $this->data = array();
-        $this->datetime = $datetime;
+    /**
+     * @param hcal_datetime $dt
+     */
+    public function __construct($dt) {
+        $this->datetime = $dt;
         
-        $lat = $location->latitude;
-        $long = $location->longitude;
-        $sunrise = date_sunrise($ts, SUNFUNCS_RET_DOUBLE, $lat, $long, $zenith, $gmt_offset);
-        $sunset = date_sunset($ts, SUNFUNCS_RET_DOUBLE, $lat, $long, $zenith, $gmt_offset);
+        // $heb_date, $ts, $gmt_offset, $location, $now, $datetime =  null
+        $ts = $dt->get_ts(false);
+        $this->is_dst = false;
+        $tz_offset = $dt->get_timezone_offset($this->is_dst);
+        $ts -= $tz_offset;
+        $this->gmt_offset = $tz_offset / 3600.0;
+        
+        $this->now = ($dt->s/3600.0) + ($dt->m/60.0) + $dt->h;
+        
+        $zenith = 90.0 + 50.0/60;
+        $this->heb_date = $dt->get_hebrew_date_numeric();
+        $this->location = $dt->location;
+        
+        $this->data = array();
+        
+        $lat = $this->location->latitude;
+        $long = $this->location->longitude;
+        $sunrise = date_sunrise($ts, SUNFUNCS_RET_DOUBLE, $lat, $long, $zenith, $this->gmt_offset);
+        $sunset = date_sunset($ts, SUNFUNCS_RET_DOUBLE, $lat, $long, $zenith, $this->gmt_offset);
         
         $this->sunrise = $sunrise;
         $this->sunset = $sunset;
@@ -143,6 +167,10 @@ class hcal_halactic_times {
         $chatsot = ($this->sunset + $this->sunrise)/2;
         
         $data = array();
+        
+        $data['tz'] = sprintf('GMT%+g',$this->gmt_offset);
+        $data['is_dst'] = $this->is_dst;
+        
         $data['sunrise'] = $this->format($this->sunrise);
         $data['sunset'] = $this->format($this->sunset);
         $data['rel_hr'] = $this->format($rel_hr);
