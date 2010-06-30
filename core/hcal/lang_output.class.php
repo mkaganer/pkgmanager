@@ -57,6 +57,17 @@ class hcal_lang_output {
         ),
     );
     
+    public static $civ_months = array(
+        'he' => array(
+            'ינואר','פברואר','מרץ','אפריל','מאי','יוני',
+            'יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר',
+        ),
+        'en' => array(
+            'January','February','March','April','May','June',
+            'July','August','September','October','November','December',
+        ),
+    );
+    
     public static $week_days = array(
         'full' => array(
             'he' => array('יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'מוצאי ש"ק'),
@@ -141,6 +152,17 @@ class hcal_lang_output {
         $lang = $this->lang;
         if (!isset(self::$heb_months[$lang])) $lang = 'en';
         return self::$heb_months[$lang][$month];
+    }
+    
+    /**
+     * @param int $month
+     * @return string
+     */
+    public function civ_month_to_str($month) {
+        $month = intval($month)-1;
+        $lang = $this->lang;
+        if (!isset(self::$civ_months[$lang])) $lang = 'en';
+        return self::$civ_months[$lang][$month];
     }
     
     public function weekday_full($weekday_num) {
