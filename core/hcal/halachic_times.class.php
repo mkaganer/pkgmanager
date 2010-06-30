@@ -251,11 +251,12 @@ class hcal_halachic_times {
     
     /**
      * @desc Returns current Sfirat HaOmer count or 0 if not in Sfirat HaOmer
+     * @param bool $force_next if true will always return the next sfira (after the sunset)
      * @return int
      */
-    public function get_omer() {
+    public function get_omer($force_next=false) {
         $jd = $this->datetime->jd;
-        if ($this->now >= $this->sunset) $jd += 1;
+        if ($force_next || ($this->now >= $this->sunset)) $jd += 1;
         // Get the JD of 15 Nisan of the current year
         $omer_jd = jewishtojd(8,15,$this->heb_date[2]);
         $omer_cnt = $jd - $omer_jd;
@@ -265,10 +266,11 @@ class hcal_halachic_times {
     
     /**
      * @desc Return Omer's count as Hebrew text according to Nusach Ari
+     * @param bool $force_next if true will always return the next sfira (after the sunset)
      * @return string of false if not in Sfirat HaOmer 
      */
-    public function get_omer_txt() {
-        $omer_cnt = $this->get_omer();
+    public function get_omer_txt($force_next=false) {
+        $omer_cnt = $this->get_omer($force_next);
         if ($omer_cnt<1) return false;
         
         $omer_cnt_mod = $omer_cnt % 7;
@@ -288,6 +290,5 @@ class hcal_halachic_times {
         }
         return $omer_txt;
     }
-    
     
 }

@@ -10,6 +10,10 @@
         <name lang="he">ארה"ב</name>
         <name lang="en">United States</name>
     </country>
+    <country id="AR">
+        <name lang="he">ארגנטינה</name>
+        <name lang="en">Argentina</name>
+    </country>
 </countries>
 <locations>
     <location id="IL/Jerusalem" lat="31.766667" lon="35.233333" tz="Asia/Jerusalem" nerot="40">
@@ -150,9 +154,27 @@
         <name lang="he">כרמיאל</name>
         <name lang="en">Carmiel</name>
     </location>
+    
+    <!-- USA -->
     <location id="US/NY/New_York" lat="40.669091" lon="-73.942822" tz="America/New_York" chul="1">
         <name lang="he">ניו-יורק</name>
         <name lang="en">New York, NY</name>
     </location>
+    <location id="US/CA/Los_Angeles" lat="34.052222" lon="-118.24222" tz="America/Los_Angeles" chul="1">
+        <name lang="he">לוס אנג'לס</name>
+        <name lang="en">Los Angeles, CA</name>
+    </location>
+    <location id="US/IL/Chicago" lat="41.836944" lon="-87.684444" tz="America/Chicago" chul="1">
+        <name lang="he">צ'יקגו</name>
+        <name lang="en">Chicago, IL</name>
+    </location>
+    
+    <!-- Argentina -->
+    <location id="AR/Buenos_Aires" lat="-34.603333" lon="-58.381666" tz="America/Argentina/Buenos_Aires" chul="1">
+        <name lang="he">בואנוס-איירס</name>
+        <name lang="en">Buenos Aires</name>
+    </location>
+    
+    
 </locations>
 </location_data>

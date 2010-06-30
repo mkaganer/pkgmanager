@@ -55,6 +55,10 @@ class hcal_datetime {
         $this->jd = gregoriantojd($data[1],$data[2],$data[0]);
     }
     
+    public function set_civil_date($m,$d,$y) {
+        $this->jd = gregoriantojd($m,$d,$y);
+    }
+    
     public function set_hebrew_date_numeric($hd) {
         $is_leap = self::is_leap_year($hd[2]);
         if ((($hd[0]==6)||($hd[0]==7))||($hd[0]==14)||($hd[0]==15)) {
