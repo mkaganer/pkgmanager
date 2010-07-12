@@ -34,8 +34,13 @@ class html_form_select extends html_form_elm {
   public static function options($arr,$sel) {
     $res = '';
     foreach($arr as $key => $val) {
-      $s = ($key==$sel)?' selected="selected"':'';
-      $res.="<option value=\"".htmlspecialchars($key)."\"$s>".htmlspecialchars($val)."</option>";
+        if (is_array($val)) {
+            $res .= "<optgroup label=\"".htmlspecialchars($key)."\">".
+                self::options($val,$sel)."</optgroup>";
+        } else {
+            $s = ($key==$sel)?' selected="selected"':'';
+            $res.="<option value=\"".htmlspecialchars($key)."\"$s>".htmlspecialchars($val)."</option>";
+        }
     }
     return $res;
   }
