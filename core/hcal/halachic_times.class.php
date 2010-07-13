@@ -124,9 +124,12 @@ class hcal_halachic_times {
      * @return string
      */
     public function format($fl_time) {
-        $hr = floor($fl_time);
-        $min = round(($fl_time - $hr)*60.0);
-        return sprintf('%02d:%02d',intval($hr),intval($min));
+        $hr = intval(floor($fl_time));
+        $min = intval(round(($fl_time - $hr)*60.0));
+        if ($min==60) {
+            $hr += 1; $min = 0;
+        }
+        return sprintf('%02d:%02d',$hr,$min);
     }
     
     /**
