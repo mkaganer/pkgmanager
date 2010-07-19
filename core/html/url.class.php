@@ -45,8 +45,9 @@ class html_url {
   private function parse_query($query) {
     $q = explode('&',$query);
     foreach($q as $qstr) {
-      list($name,$val) = explode('=',$qstr,2);
-      if (!empty($name)) $this->query[$name] = urldecode($val);
+      $v = explode('=',$qstr,2);
+      if (!isset($v[1]) || empty($v[0])) continue;
+      $this->query[$v[0]] = urldecode($v[1]);
     }
   }
   
