@@ -298,5 +298,76 @@ class html_block {
   }
   
   
+  /**
+   * @desc Parse a raw HTML or XHTML source and split it into "DOM" tree that will be added to the current block
+   * Any HTML tags become html_element instances. This function should be tolerant to missing or mismatched
+   * HTML tags like the client side browser is. 
+   * Note: currently, HTML comments are stripped out 
+   * @param string $html
+   */
+  public function parse_html($html, $strip_whitespace=true) {
+      //echo nl2br(htmlspecialchars($html));
+      // tags that will always be theated as "autoclosed" like <br />
+      $force_self_close = array(
+          'img', 'br', 'hr',
+      );
+      $force_no_self_close = array(
+          'div', 'p', 'script', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span',
+      );
+      // first of all, strip html comments
+      $html = preg_replace('#<!--.*-->#uUs','[*]',$html);
+      $split = preg_split('#<([^>]+)>#u',$html,null,PREG_SPLIT_DELIM_CAPTURE);
+      
+      // this will track the current parent element
+      $parent = $this; 
+      foreach ($split as $i => $val) {
+          if ($i % 2) {
+              $val = trim($val);
+              $close = ($val[0]=='/');
+              $self_close = ($val[strlen($val)-1]=='/');
+              $val = trim($val,'/');
+              // if we cannot parse the tag name, something is really wrong. Just skip it for safety :-)
+              if (!preg_match('#^([a-z][a-z0-9\\.:_\\-]*)(.*)$#usi',$val,$tm)) continue;
+              $tag = strtolower($tm[1]);
+              if (!$close) {
+                  $attr = $this->parse_html_tag_attr($tm[2]);
+                  $new_tag = new html_element($tag,$attr);
+                  if (in_array($tag, $force_no_self_close)) $new_tag->self_closing = false;
+                  if (!$self_close && in_array($tag, $force_self_close)) $self_close = true;
+                  $parent->add($new_tag);
+                  if (!$self_close) $parent = $new_tag;
+                  //echo htmlspecialchars($new_tag->get_html())."<br />\n";
+              } else {
+                  //echo "[close:$tag]<br />\n";
+                  // look up the matching closing tag
+                  $open_tag = $parent;
+                  while (($open_tag->tag!=$tag) && $open_tag!==$this) $open_tag = $open_tag->parent;
+                  if ($open_tag!==$this) $parent = $open_tag->parent;
+              }
+          } else {
+              // this is a plain text entry. simply add it to the "DOM" in the current level
+              if ($strip_whitespace) $val = preg_replace('#\\s+#u',' ',$val);
+              $parent->add($val);
+          }
+      }
+  }
+  
+  private function parse_html_tag_attr($str) {
+      $attr = array();
+      while (preg_match('#^\\s*([a-z][a-z0-9\\.:_\\-]*)(.*)$#usi',$str,$m)) {
+          $key = strtolower($m[1]);
+          $str = ltrim($m[2]);
+          if ($str[0]!='=') $attr[$key] = $key;
+          else {
+              if (preg_match('#^="([^"]*)"(.*)$#us',$str,$m) || preg_match("#^='([^']*)'(.*)$#us",$str,$m) ||
+                  preg_match('#^=([^\\s]*)(.*)$#us',$str,$m)) 
+              {
+                  $attr[$key] = html_entity_decode($m[1]);
+                  $str = $m[2];
+              } else return $attr;
+          }
+      }
+      return $attr;
+  }
+  
 }
-?>
