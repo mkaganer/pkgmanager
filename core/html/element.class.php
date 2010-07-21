@@ -13,7 +13,12 @@ class html_element extends html_block {
 
   public $attr = array();
   
-  private $tag; 
+  public $tag;
+
+  /**
+   * @var if true, and there's no inner content, the tag will be self-closed (in XML mode only)
+   */
+  public $self_closing = true;
 
   // any arguments after the 2 first are passed to html_block::__construct()
   public function __construct($tag,$attr=null) {
@@ -33,7 +38,7 @@ class html_element extends html_block {
     $tag = $this->tag;
     foreach($this->attr as $atk => $atv) $at .= " ${atk}=\"".htmlspecialchars($atv)."\"";
     foreach($this->members as $mbr) $inner .= $this->render_member($mbr);
-    if (!empty($inner)) {
+    if (!empty($inner) || !$this->self_closing) {
       return "<${tag}${at}>${inner}</${tag}>";
     } else {
       if (!empty($this->htdoc) && (!$this->htdoc->is_xml)) return "<${tag}${at}>"; 
