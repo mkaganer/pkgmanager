@@ -305,17 +305,18 @@ class html_block {
    * Note: currently, HTML comments are stripped out 
    * @param string $html
    */
-  public function parse_html($html, $strip_whitespace=true) {
+  public function parse_html($html, $strip_whitespace=false) {
       //echo nl2br(htmlspecialchars($html));
       // tags that will always be theated as "autoclosed" like <br />
       $force_self_close = array(
-          'img', 'br', 'hr',
+          'img', 'br', 'hr', 'input',
       );
       $force_no_self_close = array(
-          'div', 'p', 'script', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span',
+          'div', 'script', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'b', 'i',
+          'strong', 'em',
       );
       // first of all, strip html comments
-      $html = preg_replace('#<!--.*-->#uUs','[*]',$html);
+      $html = preg_replace('#<!--.*-->#uUs','',$html);
       $split = preg_split('#<([^>]+)>#u',$html,null,PREG_SPLIT_DELIM_CAPTURE);
       
       // this will track the current parent element
