@@ -10,6 +10,14 @@
         <name lang="he">ארה"ב</name>
         <name lang="en">United States</name>
     </country>
+    <country id="GB">
+        <name lang="he">אנגליה</name>
+        <name lang="en">England</name>
+    </country>
+    <country id="FR">
+        <name lang="he">צרפת</name>
+        <name lang="en">France</name>
+    </country>
     <country id="AR">
         <name lang="he">ארגנטינה</name>
         <name lang="en">Argentina</name>
@@ -175,6 +183,17 @@
         <name lang="en">Buenos Aires</name>
     </location>
     
+    <!-- England -->
+    <location id="GB/London" lat="51.507222" lon="-0.1275" tz="Europe/London" chul="1">
+        <name lang="he">לונדון</name>
+        <name lang="en">London</name>
+    </location>
+    
+    <!-- France -->
+    <location id="FR/Paris" lat="48.866667" lon="2.33333" tz="Europe/Paris" chul="1">
+        <name lang="he">פריז</name>
+        <name lang="en">Paris</name>
+    </location>
     
 </locations>
 </location_data>
