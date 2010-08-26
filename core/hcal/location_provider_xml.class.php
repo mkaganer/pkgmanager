@@ -59,10 +59,12 @@ class hcal_location_provider_xml extends hcal_location_provider {
         }
         foreach ($xml->locations->xpath('location') as $location) {
             $id = (string)$location['id'];
+            $country_id = substr($id,0,strpos($id,'/'));
             $name = $location->xpath("name[@lang='$this->lang']");
             if (isset($name[0])) $name = (string)($name[0]);
             else $name = $id;
-            $loc_data = array('name'=>$name);
+            $loc_data = array('name'=>$name,'cid'=> $country_id,
+                'cname'=>empty($this->countries[$country_id])?$country_id:$this->countries[$country_id]);
             foreach ($location->attributes() as $k => $v) {
                 if ($k=='lon') $loc_data['long'] = (string)$v;
                 else $loc_data[$k] = (string)$v;
@@ -91,9 +93,7 @@ class hcal_location_provider_xml extends hcal_location_provider {
         $locs = array();
         foreach ($this->locations as $loc) {
             $id = $loc['id'];
-            $c = substr($id,0,strpos($id,'/'));
-            if (isset($this->countries[$c])) $c = $this->countries[$c];
-            $locs[$c][$id] = $loc['name'];
+            $locs[$loc['cname']][$id] = $loc['name'];
         }
         if ($sort) {
             foreach (array_keys($locs) as $c) asort($locs[$c]);
