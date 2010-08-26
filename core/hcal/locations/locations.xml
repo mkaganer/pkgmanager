@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- B.H. -->
+<!-- 
+    B.H. 
+
+    Explanation: 
+        LAT: +N -S
+        LNG: +E -W
+        
+        
+    PHP Timezones: http://php.net/manual/en/timezones.php
+    Locations in Germany: http://en.wikipedia.org/wiki/ISO_3166-2:DE
+            
+-->
 <location_data>
 <countries>
     <country id="IL">
@@ -22,6 +33,23 @@
         <name lang="he">ארגנטינה</name>
         <name lang="en">Argentina</name>
     </country>
+    <country id="RU">
+        <name lang="he">רוסיה</name>
+        <name lang="en">Russia</name>
+    </country>
+    <country id="UA">
+        <name lang="he">אוקראינה</name>
+        <name lang="en">Ukraine</name>
+    </country>
+    <country id="DE">
+        <name lang="he">גרמניה</name>
+        <name lang="en">Germany</name>
+    </country>
+    <country id="AU">
+        <name lang="he">אוסטרליה</name>
+        <name lang="en">Australia</name>
+    </country>
+    
 </countries>
 <locations>
     <location id="IL/Jerusalem" lat="31.766667" lon="35.233333" tz="Asia/Jerusalem" nerot="40">
@@ -195,5 +223,39 @@
         <name lang="en">Paris</name>
     </location>
     
+    <!-- Germany -->
+    <location id="DE/Berlin" lat="52.516667" lon="13.383333" tz="Europe/Berlin" chul="1">
+        <name lang="he">ברלין</name>
+        <name lang="en">Berlin</name>
+    </location>
+    
+    <!-- Russia -->
+    <location id="RU/Moskow" lat="55.755786" lon="37.617617" tz="Europe/Moscow" chul="1">
+        <name lang="he">מוסקבה</name>
+        <name lang="en">Moskow</name>
+    </location>
+    
+    <!-- Ukraine -->
+    <location id="UA/Kiev" lat="50.451821" lon="30.49942" tz="Europe/Kiev" chul="1">
+        <name lang="he">קייב</name>
+        <name lang="en">Kiev</name>
+    </location>
+    <location id="UA/Uman" lat="48.749851" lon="30.220642" tz="Europe/Kiev" chul="1">
+        <name lang="he">אומן</name>
+        <name lang="en">Uman</name>
+    </location>
+
+    <location id="AU/Sydney" lat="-33.859972" lon="151.211111" tz="Australia/Sydney" chul="1">
+        <name lang="he">סידני</name>
+        <name lang="en">Sydney</name>
+    </location>
+
 </locations>
+    <!--
+    <location id="" lat="" lon="" tz="" chul="1">
+        <name lang="he"></name>
+        <name lang="en"></name>
+    </location>
+    -->
+
 </location_data>
