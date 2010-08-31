@@ -230,7 +230,7 @@
     </location>
     
     <!-- Russia -->
-    <location id="RU/Moskow" lat="55.755786" lon="37.617617" tz="Europe/Moscow" chul="1">
+    <location id="RU/Moscow" lat="55.755786" lon="37.617617" tz="Europe/Moscow" chul="1">
         <name lang="he">מוסקבה</name>
         <name lang="en">Moskow</name>
     </location>
