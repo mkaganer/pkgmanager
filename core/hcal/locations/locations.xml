@@ -238,7 +238,7 @@
         <name lang="he">לונדון</name>
         <name lang="en">London</name>
     </location>
-    <location id="GB/London" lat="53.482489" lon="-2.242127" tz="Europe/London" chul="1">
+    <location id="GB/Manchester" lat="53.482489" lon="-2.242127" tz="Europe/London" chul="1">
         <name lang="he">מנצ'סטר</name>
         <name lang="en">Manchester</name>
     </location>
