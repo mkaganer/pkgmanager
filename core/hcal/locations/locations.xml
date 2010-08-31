@@ -21,6 +21,10 @@
         <name lang="he">ארה"ב</name>
         <name lang="en">United States</name>
     </country>
+    <country id="CA">
+        <name lang="he">קנדה</name>
+        <name lang="en">Canada</name>
+    </country>
     <country id="GB">
         <name lang="he">אנגליה</name>
         <name lang="en">England</name>
@@ -40,6 +44,10 @@
     <country id="UA">
         <name lang="he">אוקראינה</name>
         <name lang="en">Ukraine</name>
+    </country>
+    <country id="PL">
+        <name lang="he">פולין</name>
+        <name lang="en">Poland</name>
     </country>
     <country id="DE">
         <name lang="he">גרמניה</name>
@@ -196,6 +204,10 @@
         <name lang="he">ניו-יורק</name>
         <name lang="en">New York, NY</name>
     </location>
+    <location id="US/DC/Washington" lat="38.896537" lon="-77.034874" tz="EST" chul="1">
+        <name lang="he">וושינגטון</name>
+        <name lang="en">Washington, DC</name>
+    </location>
     <location id="US/CA/Los_Angeles" lat="34.052222" lon="-118.24222" tz="America/Los_Angeles" chul="1">
         <name lang="he">לוס אנג'לס</name>
         <name lang="en">Los Angeles, CA</name>
@@ -203,6 +215,16 @@
     <location id="US/IL/Chicago" lat="41.836944" lon="-87.684444" tz="America/Chicago" chul="1">
         <name lang="he">שיקאגו</name>
         <name lang="en">Chicago, IL</name>
+    </location>
+    
+    <!-- Canada -->
+    <location id="CA/Toronto" lat="43.63846" lon="-79.389038" tz="America/Toronto" chul="1">
+        <name lang="he">טורונטו</name>
+        <name lang="en">Toronto</name>
+    </location>
+    <location id="CA/Montreal" lat="45.500957" lon="-73.599243" tz="America/Montreal" chul="1">
+        <name lang="he">מונטריאול</name>
+        <name lang="en">Montreal, QC</name>
     </location>
     
     <!-- Argentina -->
@@ -215,6 +237,10 @@
     <location id="GB/London" lat="51.507222" lon="-0.1275" tz="Europe/London" chul="1">
         <name lang="he">לונדון</name>
         <name lang="en">London</name>
+    </location>
+    <location id="GB/London" lat="53.482489" lon="-2.242127" tz="Europe/London" chul="1">
+        <name lang="he">מנצ'סטר</name>
+        <name lang="en">Manchester</name>
     </location>
     
     <!-- France -->
@@ -234,6 +260,20 @@
         <name lang="he">מוסקבה</name>
         <name lang="en">Moskow</name>
     </location>
+    <location id="RU/RostovDon" lat="47.240364" lon="39.715347" tz="Europe/Moscow" chul="1">
+        <name lang="he">רוסטוב-דון</name>
+        <name lang="en">Rostov-on-Don</name>
+    </location>
+    <location id="RU/Perm" lat="58.000000" lon="56.316667" tz="Etc/GMT-5" chul="1">
+        <name lang="he">פרם</name>
+        <name lang="en">Perm</name>
+    </location>
+    <!--
+    <location id="RU/Vladivostok" lat="43.133333" lon="131.9" tz="Asia/Vladivostok" chul="1">
+        <name lang="he">ולדיווסטוק</name>
+        <name lang="en">Vladivostok</name>
+    </location>
+    -->
     
     <!-- Ukraine -->
     <location id="UA/Kiev" lat="50.451821" lon="30.49942" tz="Europe/Kiev" chul="1">
@@ -244,7 +284,14 @@
         <name lang="he">אומן</name>
         <name lang="en">Uman</name>
     </location>
+    
+    <!-- Poland -->
+    <location id="PL/Warsaw" lat="52.233351" lon="21.013641" tz="Europe/Warsaw" chul="1">
+        <name lang="he">וורשא</name>
+        <name lang="en">Warsaw</name>
+    </location>
 
+    <!-- Australia -->
     <location id="AU/Sydney" lat="-33.859972" lon="151.211111" tz="Australia/Sydney" chul="1">
         <name lang="he">סידני</name>
         <name lang="en">Sydney</name>
