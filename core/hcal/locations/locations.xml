@@ -33,25 +33,37 @@
         <name lang="he">צרפת</name>
         <name lang="en">France</name>
     </country>
-    <country id="AR">
-        <name lang="he">ארגנטינה</name>
-        <name lang="en">Argentina</name>
+    <country id="DE">
+        <name lang="he">גרמניה</name>
+        <name lang="en">Germany</name>
     </country>
-    <country id="RU">
-        <name lang="he">רוסיה</name>
-        <name lang="en">Russia</name>
+    <country id="CH">
+        <name lang="he">שווייץ</name>
+        <name lang="en">Switerland</name>
     </country>
-    <country id="UA">
-        <name lang="he">אוקראינה</name>
-        <name lang="en">Ukraine</name>
+    <country id="AT">
+        <name lang="he">אוסטריה</name>
+        <name lang="en">Austria</name>
+    </country>
+    <country id="CZ">
+        <name lang="he">צ'כיה</name>
+        <name lang="en">Czech Republic</name>
     </country>
     <country id="PL">
         <name lang="he">פולין</name>
         <name lang="en">Poland</name>
     </country>
-    <country id="DE">
-        <name lang="he">גרמניה</name>
-        <name lang="en">Germany</name>
+    <country id="UA">
+        <name lang="he">אוקראינה</name>
+        <name lang="en">Ukraine</name>
+    </country>
+    <country id="RU">
+        <name lang="he">רוסיה</name>
+        <name lang="en">Russia</name>
+    </country>
+    <country id="AR">
+        <name lang="he">ארגנטינה</name>
+        <name lang="en">Argentina</name>
     </country>
     <country id="AU">
         <name lang="he">אוסטרליה</name>
@@ -253,6 +265,24 @@
     <location id="DE/Berlin" lat="52.516667" lon="13.383333" tz="Europe/Berlin" chul="1">
         <name lang="he">ברלין</name>
         <name lang="en">Berlin</name>
+    </location>
+    
+    <!-- Switerland (CH) -->
+    <location id="CH/Zurich" lat="47.37185" lon="8.536377" tz="Europe/Zurich" chul="1">
+        <name lang="he">ציריך</name>
+        <name lang="en">Zurich</name>
+    </location>
+    
+    <!-- Austria -->
+    <location id="AT/Wien" lat="48.2" lon="16.35" tz="Europe/Vienna" chul="1">
+        <name lang="he">ווינה</name>
+        <name lang="en">Wien</name>
+    </location>
+    
+    <!-- Czech Republic -->
+    <location id="CZ/Prague" lat="50.085344" lon="14.430542" tz="Europe/Prague" chul="1">
+        <name lang="he">פראג</name>
+        <name lang="en">Prague</name>
     </location>
     
     <!-- Russia -->
