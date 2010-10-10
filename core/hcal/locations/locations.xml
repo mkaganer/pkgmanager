@@ -174,7 +174,7 @@
         <name lang="he">טבריה</name>
         <name lang="en">Tiberias</name>
     </location>
-    <location id="IL/Haifa" lat="32.826945" lon="34.97694" tz="Asia/Jerusalem">
+    <location id="IL/Haifa" lat="32.826945" lon="34.97694" tz="Asia/Jerusalem" nerot="30">
         <name lang="he">חיפה</name>
         <name lang="en">Haifa</name>
     </location>
