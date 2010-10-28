@@ -313,7 +313,7 @@ class html_block {
       );
       $force_no_self_close = array(
           'div', 'script', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'b', 'i',
-          'strong', 'em',
+          'strong', 'em', 'a',
       );
       // first of all, strip html comments
       $html = preg_replace('#<!--.*-->#uUs','',$html);
