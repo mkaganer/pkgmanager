@@ -257,6 +257,22 @@ class hcal_halachic_times {
      * @param bool $force_next if true will always return the next sfira (after the sunset)
      * @return int
      */
+    public function get_chanuka_candles($force_next=false) {
+        $jd = $this->datetime->jd;
+        $plag = $this->sunrise + $this->rel_hr*10.75;
+        if ($force_next || ($this->now >= $plag)) $jd += 1;
+        // Get the JD of 24 Kislev of the current year
+        $chanuka_jd = jewishtojd(3,24,$this->heb_date[2]);
+        $chanuka_cnt = $jd - $chanuka_jd;
+        if (($chanuka_cnt<1) || ($chanuka_cnt>8)) return 0;
+        return $chanuka_cnt;
+    }
+    
+    /**
+     * @desc Returns current Sfirat HaOmer count or 0 if not in Sfirat HaOmer
+     * @param bool $force_next if true will always return the next sfira (after the sunset)
+     * @return int
+     */
     public function get_omer($force_next=false) {
         $jd = $this->datetime->jd;
         if ($force_next || ($this->now >= $this->sunset)) $jd += 1;
