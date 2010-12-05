@@ -143,8 +143,13 @@ class hcal_datetime {
         return $res;
     }
     
-    public function get_weekday($type='full') {
-        $wd = ($this->jd+1) % 7;
+    public function get_weekday($type='full',$htimes=null) {
+        $jd = $this->jd;
+        if (!empty($htimes)) {
+            if ($htimes->now >= $htimes->sunset) $jd += 1; // jewish day begins with a sunset!
+        }
+        $wd = ($jd+1) % 7;
+        if (is_null($type)) return $wd;
         return $this->lang_output->weekday($wd,$type);
     }
     
