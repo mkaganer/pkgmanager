@@ -264,6 +264,8 @@ class hcal_halachic_times {
         // Get the JD of 24 Kislev of the current year
         $chanuka_jd = jewishtojd(3,24,$this->heb_date[2]);
         $chanuka_cnt = $jd - $chanuka_jd;
+        if (($chanuka_cnt==9) && ($this->now>=$plag) && 
+            ($this->now<($this->sunset+$this->rel_hr*0.4))) $chanuka_cnt = 8;
         if (($chanuka_cnt<1) || ($chanuka_cnt>8)) return 0;
         return $chanuka_cnt;
     }
