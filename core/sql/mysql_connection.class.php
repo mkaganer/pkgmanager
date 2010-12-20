@@ -54,7 +54,7 @@ class sql_mysql_connection extends sql_connection {
   }
 
   public function __destruct() {
-    if ($this->link) mysql_close($this->link);
+    if ($this->link  && (empty($this->config['noclose']))) mysql_close($this->link);
   }
 
   public function select_db($db) {
