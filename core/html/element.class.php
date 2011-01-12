@@ -45,6 +45,4 @@ class html_element extends html_block {
       return "<${tag}${at} />";
     }
   }
-  
 }
-?>
