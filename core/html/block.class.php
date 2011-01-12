@@ -337,9 +337,7 @@ class html_block {
                   if (!$self_close && in_array($tag, $force_self_close)) $self_close = true;
                   $parent->add($new_tag);
                   if (!$self_close) $parent = $new_tag;
-                  //echo htmlspecialchars($new_tag->get_html())."<br />\n";
               } else {
-                  //echo "[close:$tag]<br />\n";
                   // look up the matching closing tag
                   $open_tag = $parent;
                   while (($open_tag->tag!=$tag) && $open_tag!==$this) $open_tag = $open_tag->parent;
@@ -369,6 +367,20 @@ class html_block {
           }
       }
       return $attr;
+  }
+  
+  /**
+   * Recursively scan the members and get the stripped text (with out the HTML tags). 
+   * Works like striptags() on strings
+   * @return string
+   */
+  public function get_inner_text() {
+      $out = '';
+      foreach($this->members as $mbr) {
+          if (is_string($mbr) || is_numeric($mbr)) $out .= html_entity_decode((string)$mbr,ENT_QUOTES,'UTF-8');
+          elseif ($mbr instanceof html_block) $out .= $mbr->get_inner_text();
+      }
+      return $out;
   }
   
 }
