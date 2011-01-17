@@ -45,6 +45,12 @@ class grid_table {
      */
     public $sql_limit = true;
     
+    
+    /**
+     * @var pkgman_package
+     */
+    private $pkg;
+    
     /**
      * @param string $query
      * @param string $count_query
@@ -52,15 +58,15 @@ class grid_table {
      * @param sql_connection $xlink
      */
     public function __construct($query, $count_query, $base_url, $xlink=null) {
-        $pkg = pkgman_manager::getp('grid');
+        $this->pkg = pkgman_manager::getp('grid');
         $this->columns = array();
         $this->query = $query;
         $this->count_query = $count_query;
         $this->base_url = $base_url;
-        $this->param_from = $pkg->config['param_from'];
-        $this->rows_per_page = $pkg->config['rows_per_page'];
-        $this->id_column = $pkg->config['default_id_column'];
-        if ($xlink instanceof sql_connection) $this->xlink = $xlink;
+        $this->param_from = $this->pkg->config['param_from'];
+        $this->rows_per_page = $this->pkg->config['rows_per_page'];
+        $this->id_column = $this->pkg->config['default_id_column'];
+        if (!empty($xlink)) $this->xlink = $xlink;
         else $this->xlink = sql_connection::get_connection();
     }
     
@@ -77,12 +83,11 @@ class grid_table {
      * @return void
      */
     public function add_columns($columns) {
-        $pkg = pkgman_manager::getp('grid');
         foreach ($columns  as $name => $params) {
             if (is_numeric($name)) throw new Exception("Invalid columns data");
             
-            if (isset($params['type'])) $type = $pkg->config['column_types'][$params['type']];
-            else $type = $pkg->config['column_types'][0];
+            if (isset($params['type'])) $type = $this->pkg->config['column_types'][$params['type']];
+            else $type = $this->pkg->config['column_types'][0];
             
             if (!class_exists($type,true)) 
                 throw new Exception("Invalid column [$name] - class [$type] does not exist");
