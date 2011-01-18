@@ -30,7 +30,7 @@ class html_url {
               $m2 = ltrim($m[2],'/');
               $vals = explode('/',$m2,2);
               $this->host = trim($vals[0],'/');
-              $this->path = isset($vals[1])?trim($vals[1],'/'):'';
+              $this->path = isset($vals[1])?ltrim($vals[1],'/'):'';
               break;
           default:
               $this->host = null;

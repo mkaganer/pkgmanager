@@ -18,6 +18,11 @@ class login_session {
     const SUPERADMIN = 100;
     
     /**
+     * @var login_provider
+     */
+    public $provider;
+    
+    /**
      * @var string
      */
     private $username;
@@ -43,7 +48,8 @@ class login_session {
      * @param int $level
      * @param array $roles
      */
-    public function __construct($username, $level, $roles=null) {
+    public function __construct($provider, $username, $level, $roles=null) {
+        $this->provider = $provider;
         $this->username = $username;
         $this->metadata = array();
         $this->level = intval($level);
@@ -93,9 +99,8 @@ class login_session {
         
         // no roles requirements
         if (empty($roles)) return true;
-        // a single role
-        if (!is_array($roles)) return isset($this->roles[$roles]);
-        // multiple roles
+        if (is_string($roles)) $roles = array_map('trim',preg_split('/[\\s\\n,;]+/u',$roles));
+        var_dump($roles);
         foreach ($roles as $role) if (!isset($this->roles[$role])) return false;
         return true;
     }

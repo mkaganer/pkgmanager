@@ -15,7 +15,7 @@ class login_provider_simple extends login_provider {
         if (empty($sdata) || empty($sdata['username']) || empty($sdata['level'])) 
             return $this->_session = $this->get_anonymous_session();
         
-        return $this->_session = new login_session($sdata['username'],$sdata['level'],
+        return $this->_session = new login_session($this,$sdata['username'],$sdata['level'],
             isset($sdata['roles'])?$sdata['roles']:null);
     }
     
