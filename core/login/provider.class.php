@@ -6,7 +6,7 @@
  * for login providers 
  * @author mkaganer
  */
-class login_provider {
+abstract class login_provider {
     
     /**
      * @desc session cache
@@ -53,7 +53,7 @@ class login_provider {
     
     
     protected function get_anonymous_session() {
-        return new login_session(null,login_session::ANONYMOUS);
+        return new login_session($this,null,login_session::ANONYMOUS);
     }
     
     protected function & init_php_session() {
