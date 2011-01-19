@@ -93,14 +93,13 @@ class login_session {
      * @param array|string $roles one (as string) or more (as array) roles that are required
      * @return boolean
      */
-    public function is_granted($level,$roles=null) {
-        if ($this->level<$level) return false;
+    public function is_granted($level=null,$roles=null) {
+        if (!is_null($level) && $this->level<$level) return false;
         if ($this->level==self::SUPERADMIN) return true;
         
         // no roles requirements
         if (empty($roles)) return true;
         if (is_string($roles)) $roles = array_map('trim',preg_split('/[\\s\\n,;]+/u',$roles));
-        var_dump($roles);
         foreach ($roles as $role) if (!isset($this->roles[$role])) return false;
         return true;
     }
