@@ -3,6 +3,8 @@
 
 class login_provider_simple extends login_provider {
     
+    private static $token_salt = '770n#2vvx$&aaP2D$Rv770';
+    
     protected $login_data;
 
     public function __construct($login_data) {
@@ -12,11 +14,28 @@ class login_provider_simple extends login_provider {
     public function get_session() {
         if (!empty($this->_session)) return $this->_session;
         $sdata =& $this->init_php_session();
-        if (empty($sdata) || empty($sdata['username']) || empty($sdata['level'])) 
+        $d = $this->get_session_data($sdata);
+        if (!$d) {
+            $sdata = array(); // invalidate the session 
             return $this->_session = $this->get_anonymous_session();
+        }
+        return $this->_session = new login_session($this,$d['username'],$d['level'],$d['roles']);
+    }
+    
+    private function get_session_data(&$sdata) {
+        if (empty($sdata) || empty($sdata['username']) || empty($sdata['token'])) return false;
         
-        return $this->_session = new login_session($this,$sdata['username'],$sdata['level'],
-            isset($sdata['roles'])?$sdata['roles']:null);
+        $username = (string)$sdata['username'];
+        if (!isset($this->login_data[$username])) return false;
+        $ldata = $this->login_data[$username];
+        
+        if ($sdata['token']!=md5(self::$token_salt.$username.$ldata['password'])) return false;
+        
+        return array(
+            'username' => $username,
+            'level' => empty($ldata['level'])?login_session::USER:intval($ldata['level']),
+            'roles' => empty($ldata['roles'])?array():$ldata['roles'],
+        );
     }
     
     /**
@@ -32,12 +51,9 @@ class login_provider_simple extends login_provider {
         if (!isset($this->login_data[$username])) return false;
         $ldata = $this->login_data[$username];
         if ($credetials['password']!=$ldata['password']) return false;
-        $level = empty($ldata['level'])?login_session::USER:intval($ldata['level']);
-        $roles = empty($ldata['roles'])?array():array_flip($ldata['roles']);
         
         $sdata['username'] = $username;
-        $sdata['level'] = $level;
-        $sdata['roles'] = $roles;
+        $sdata['token'] = md5(self::$token_salt.$credetials['username'].$credetials['password']);
         return $this->get_session();
     }
 

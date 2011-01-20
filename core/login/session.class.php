@@ -39,7 +39,7 @@ class login_session {
     private $level;
     
     /**
-     * @var array array('role1'=>true,'role2'=>true,...)
+     * @var array array('role1'=>X,'role2'=>X,...)
      */
     private $roles;
     
@@ -53,7 +53,7 @@ class login_session {
         $this->username = $username;
         $this->metadata = array();
         $this->level = intval($level);
-        $this->roles = (array)$roles;
+        $this->roles = array_flip(self::parse_roles($roles));
     }
     
     public function get_username() {
@@ -99,9 +99,17 @@ class login_session {
         
         // no roles requirements
         if (empty($roles)) return true;
-        if (is_string($roles)) $roles = array_map('trim',preg_split('/[\\s\\n,;]+/u',$roles));
+        $roles = self::parse_roles($roles); 
         foreach ($roles as $role) if (!isset($this->roles[$role])) return false;
         return true;
+    }
+    
+    public static function parse_roles($roles) {
+        if (empty($roles)) return array();
+        if (is_array($roles)) return $roles;
+        $roles = array_map('trim',preg_split('/[\\s\\n,;]+/u',$roles));
+        foreach($roles as $i => $r) if (empty($r)) unset($roles[$i]);
+        return $roles;
     }
     
 }
