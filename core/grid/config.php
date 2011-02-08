@@ -12,29 +12,28 @@
  */
 $config = array(
 
-    // default get parameter for 'from' limit value (see grid_table::param_from) 
-    'param_from' => 'grdf',
-
-    // default rows per page
-    'rows_per_page' => 20,
-
+    // which column in the query holds the primary key (grid_table::id_column can override this)
     'default_id_column' => 'id',
 
     'column_types' => array(
-        0 => 'grid_column', // default column class
-        'int' => 'grid_column_int', 
+        // default column class
+        0 => 'grid_column', 
+        // 1 or more button links which automatically add the primary key to the link url 
+        'buttons' => 'grid_column_buttons',  
     ),
 
+    // the default table tag class 
+    'table_attr' => array('class'=>'grid', 'cellspacing'=>0, 'cellpadding'=>5, 'border'=>1),
+    
+    'tr_classes' => array('grid_0','grid_1'),
+
+    // if true, the grid will be split in pages
+    'use_paging' => false,
+
+    // paging and sorting URL parameter names
+    'paging_var' => 'grf',
+    'order_var' => 'gro',
+
+    // default rows per page
+    'rows_per_page' => 20,
 );
-
-/*
-     * Optional: package control class (must inherit pkgman_package)
-     Example:
-     class <name> extends pkgman_package {
-     ....
-     }
-     $package = new <name>($pkg_name,$prefix,$path,$config)
-
-     * (if $package is not defined, pkgman_manager will automatically
-     * create an instance of a generic pkgman_package class)
-*/
