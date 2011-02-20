@@ -300,17 +300,23 @@ class html_block {
   
   /**
    * @desc Parse a raw HTML or XHTML source and split it into "DOM" tree that will be added to the current block
-   * Any HTML tags become html_element instances. This function should be tolerant to missing or mismatched
-   * HTML tags like the client side browser is. 
-   * Note: currently, HTML comments are stripped out 
+   * Any HTML tags become html_element instances. This function is tolerant to missing or mismatched
+   * HTML tags like most HTML rendering engines. This funciton is also aware of tags that must or must not
+   * be self-closed (as it whould happen by XML conventions), so the output of $this->get_html() 
+   * should be always suitable as (X)HTML.
+   * Note: currently, there's no support for CDATA blocks (to be added soon...), 
+   * and HTML comments are currentrly stripped out
    * @param string $html
    */
   public function parse_html($html, $strip_whitespace=false) {
-      //echo nl2br(htmlspecialchars($html));
-      // tags that will always be theated as "autoclosed" like <br />
+      // Theese tags will always be theated as "autoclosed" like <br />, no children tags allowed
       $force_self_close = array(
           'img', 'br', 'hr', 'input',
       );
+      // Theese tags will never be rendered as "self-closing", even if they are empty. Some rendering
+      // engines (like Mozilla's Gecko) will refuse to parse some self-closing tags properly even if 
+      // DOCTYPE of the document is set to XHTML DTD 
+      // (this happens if HTTP Content-type is set to text/html and not to XML doctype) 
       $force_no_self_close = array(
           'div', 'script', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'b', 'i',
           'strong', 'em', 'a',

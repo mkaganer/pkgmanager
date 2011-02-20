@@ -1,7 +1,10 @@
 <?php
 // B.H.
 
-// used to bind form-related controls to data
+/**
+ * @author mkaganer
+ * @desc used to bind form-related controls to data
+ */
 class html_form_context {
 
   public $data = array();

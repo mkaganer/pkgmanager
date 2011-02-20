@@ -1,12 +1,7 @@
 <?php
 // B.H.
 
-class grid_table {
-    
-    /**
-     * @var sql_connection
-     */
-    public $xlink;
+class grid_table extends grid_base {
     
     /**
      * @var array ( grid_column )
@@ -25,16 +20,10 @@ class grid_table {
     public $default_orderby;
     
     /**
-     * @desc Helper query to get the total number of rows availiable in $this->query result
+     * @desc Helper query to get the total number of rows availiable in $this->query result - used for paging
      * @var string
      */
     public $count_query;
-    
-    /**
-     * URL pointing back to the current page to allow paging and sorting links
-     * @var html_url
-     */
-    public $base_url;
     
     /* see config.php for explanation of theese parameters */
     
@@ -60,6 +49,14 @@ class grid_table {
     public $paging_var;
     
     /**
+     * @var array
+     */
+    public $paging_icons;
+    
+    public $sort_icon_asc;
+    public $sort_icon_desc;
+    
+    /**
      * @var string
      */
     public $order_var;
@@ -74,12 +71,6 @@ class grid_table {
      */
     public $id_column;
 
-    /**
-     * @var pkgman_package
-     */
-    private $pkg;
-    
-    
     /**
      * The current row data
      * @var array
@@ -107,38 +98,45 @@ class grid_table {
      */
     public $cell;
     
+    private $actual_orderby;
+    
+    private $full_sql;
+    
     /**
      * @param string $query
      * @param string $count_query
      * @param html_url $base_url
-     * @param sql_connection $xlink
      */
-    public function __construct($query, $default_orderby, $count_query,html_url $base_url) {
-        $this->pkg = pkgman_manager::getp('grid');
+    public function __construct(html_url $base_url, $query, $default_orderby='') {
+        parent::__construct($base_url);
         $c =& $this->pkg->config;
         $this->columns = array();
         $this->query = $query;
         $this->default_orderby = $default_orderby;
-        $this->count_query = $count_query;
         $this->base_url = $base_url;
         $this->table_attr = $c['table_attr'];
         $this->tr_classes = (array)$c['tr_classes'];
-        $this->use_paging = $c['use_paging'];
+        $this->use_paging = false;
         $this->paging_var = $c['paging_var'];
+        $this->paging_icons = $c['paging_icons'];
+        $this->sort_icon_asc = $c['sort_icon_asc'];
+        $this->sort_icon_desc = $c['sort_icon_desc'];
         $this->order_var = $c['order_var'];
         $this->rows_per_page = $c['rows_per_page'];
         $this->id_column = $c['default_id_column'];
-        if (!empty($xlink)) $this->xlink = $xlink;
-        elseif (is_object($c['xlink'])) $this->xlink = $c['xlink'];
-        else $this->xlink = sql_connection::get_connection();
-        if (empty($this->xlink)) throw new Exception('No SQL connection');
+    }
+    
+    public function setup_paging($count_query, $rows_per_page=null) {
+        $this->count_query = $count_query;
+        if ($rows_per_page) $this->rows_per_page = $rows_per_page;
+        $this->use_paging = true;
     }
     
     /**
      * @desc $columns = array (
      *      'col1' => array(
      *          ['type'=>'column_type',]
-     *          ['header' => 'header title text',]
+     *          ['header title text',]
      *          .... custom params for the column
      *      ),
      *      .... more columns
@@ -151,29 +149,105 @@ class grid_table {
             if (isset($params['type'])) $type = $this->pkg->config['column_types'][$params['type']];
             else $type = $this->pkg->config['column_types'][0];
             
+            if (empty($type)) throw new Exception("Column type '$params[type]' is undefined");
             if (!class_exists($type,true)) 
-                throw new Exception("Invalid column [$name] - class [$type] does not exist");
+                throw new Exception("Invalid column type '$params[type]' - $type class not found");
             $column = new $type($this,$name, $params);
             $this->columns[$name] = $column;
         }
     }
     
+    private function get_paging_url($from) {
+        return htmlspecialchars($this->base_url->get_url(array($this->paging_var=>$from)));
+    }
+    
+    private function get_paging_tag($from, $page, $disabled = false) {
+        $class = "grid-button";
+        $url = $this->get_paging_url($from);
+        if (is_numeric($page)) {
+            //if (!empty($this->paging_icons['page'])) $text = sprintf($this->paging_icons['page'],$page);
+            ///else $text = $page;
+            $text = $page;
+        } elseif (isset($this->paging_icons[$page])) {
+            if (!empty($this->paging_icons[$page][0])) 
+                $class .= ' grid-button-icononly '.$this->paging_icons[$page][0];
+            $text = $this->paging_icons[$page][1];
+        }
+        if ($disabled) $class .= " grid-button-disabled";
+        return "<a class=\"$class\" href=\"$url\">$text</a>";
+    }
+    
+    private function get_paging_block() {
+        // get total rows number
+        $total_rows = $this->xlink->select_s($this->count_query);
+        
+        $from = min($total_rows-1,max(0,intval(@$_GET[$this->paging_var])));
+        $limit = max(1,$this->rows_per_page);
+        $this->full_sql .= " limit $from,$limit";
+        
+        $paging = new html_element('div',array('class'=>'grid_paging'));
+        $current_page = intval($from/$limit)+1;
+        $last_page = intval(($total_rows-1)/$limit)+1;
+        $prev_page = max($current_page-1,0);
+        $next_page = min($current_page+1,$last_page);
+        $paging->add($this->get_paging_tag(0,'first',($from==0)));
+        $paging->add($this->get_paging_tag(($prev_page-1)*$limit,'prev',($from==0)));
+        $paging->add($this->get_paging_tag(($current_page-1)*$limit,$current_page,true));
+        $paging->add($this->get_paging_tag(($next_page-1)*$limit,'next',($from>=($last_page-1)*$limit)));
+        $paging->add($this->get_paging_tag(($last_page-1)*$limit,'last',($from>=($last_page-1)*$limit)));
+
+        return $paging;
+    }
+    
+    private function set_actual_orderby($order_var,$order_inv) {
+        if (!isset($this->columns[$order_var]) || empty($this->columns[$order_var]->params['order_by'])) return;
+        $order_by = $this->columns[$order_var]->params['order_by'];
+        if ($order_by===true) $order_by = $this->columns[$order_var]->name.' asc';
+        if ($order_inv) $order_by = preg_replace_callback('/(asc|desc)/iu',array($this,'set_actual_orderby_cb'),$order_by);
+        $this->actual_orderby = $order_by;
+    }
+    
+    private function set_actual_orderby_cb($m) {
+        if (strtolower($m[0])=='asc') return 'desc';
+        else return 'asc';
+    }
     
     /**
      * @return html_block
      */
     public function render() {
         $res = new html_block();
-        $this->table = new html_element('table');
-        $this->table->attr = $this->table_attr;
-        $res->add($this->table);
-        
+        $this->table = new html_element('table',$this->table_attr);
         $this->table->add($thead = new html_element('thead'));
         $this->table->add($tbody = new html_element('tbody'));
+        $res->add($this->table);
+        
+        $order_var = stripslashes(@$_GET[$this->order_var]);
+        $order_inv = false;
+        if ($order_var[0]=='-') {
+            $order_var = substr($order_var,1);
+            $order_inv = true;
+        }
+        $this->actual_orderby = $this->default_orderby; 
+        if (!empty($order_var)) $this->set_actual_orderby($order_var,$order_inv);
+        $order_icon = (preg_match('/\\s+asc($|\\s)/iu',$this->actual_orderby))?
+            $this->sort_icon_asc:$this->sort_icon_desc;
+        
         $thead->add($this->tr = new html_element('tr')); 
         
         // create the header row:
+        $order_base_url = clone $this->base_url;
+        if (isset($order_base_url->query[$this->paging_var])) unset($order_base_url->query[$this->paging_var]);
         foreach ($this->columns as $col_name => $col) {
+            if (!empty($col->params['order_by'])) {
+                if (empty($this->actual_orderby)) $this->actual_orderby = $col->params['order_by'];
+                if (($order_var!=$col_name) || $order_inv) {
+                    $col->params['header_link'] = $order_base_url->get_url(array($this->order_var=>$col_name));
+                } else {
+                    $col->params['header_link'] = $order_base_url->get_url(array($this->order_var=>'-'.$col_name));
+                }
+                if ($order_var==$col_name) $col->params['header_icon'] = $order_icon;
+            }
             $this->tr->add($this->cell = new html_element('th'));
             if ($col->width>0) $this->cell->attr['width'] = $col->width;
             
@@ -181,9 +255,13 @@ class grid_table {
             if (!empty($inner)) $this->cell->add($inner);
         }
         
+        $this->full_sql = $this->query;
+        if (!empty($this->actual_orderby)) $this->full_sql .= ' order by '.$this->actual_orderby;
+        
+        if ($this->use_paging) $res->add($this->get_paging_block());
+        
         // fetch the data
-        $full_sql = $this->query.' order by '.$this->default_orderby;
-        $query = $this->xlink->query($full_sql);
+        $query = $this->xlink->query($this->full_sql);
         $tr_class_cnt = 0; 
         while($query->arow($this->row)) {
             $this->id_value = $this->row[$this->id_column];
