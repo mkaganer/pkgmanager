@@ -17,8 +17,10 @@ $config = array(
 
     'column_types' => array(
         // default column class
-        0 => 'grid_column', 
-        // 1 or more button links which automatically add the primary key to the link url 
+        0 => 'grid_column',
+        'boolean' => 'grid_column_boolean',
+        'datetime' => 'grid_column_datetime', 
+        // 1 or more button links which automatically add the primary key to the link url
         'buttons' => 'grid_column_buttons',  
     ),
 
@@ -27,13 +29,21 @@ $config = array(
     
     'tr_classes' => array('grid_0','grid_1'),
 
-    // if true, the grid will be split in pages
-    'use_paging' => false,
-
     // paging and sorting URL parameter names
     'paging_var' => 'grf',
     'order_var' => 'gro',
 
     // default rows per page
     'rows_per_page' => 20,
+    
+    'paging_icons' => array(
+        'page' => 'Page #%d',
+        'prev' => array('ui-icon-seek-prev','Previous page'),
+        'next' => array('ui-icon-seek-next','Next page'),
+        'first' => array('ui-icon-seek-first','First page'),
+        'last' => array('ui-icon-seek-end','Last page'),
+    ),
+    
+    'sort_icon_asc' => 'ui-icon-triangle-1-n',
+    'sort_icon_desc' => 'ui-icon-triangle-1-s',
 );

@@ -38,7 +38,8 @@ class grid_column {
         $this->table = $table;
         $this->name = $name;
         $this->params = $params;
-        $this->title = empty($params['title'])?$name:$params['title'];
+        if (!empty($params[0]) && is_string($params[0])) $this->title = $params[0];
+        else $this->title = empty($params['title'])?$name:$params['title'];
         if (!empty($params['width']) && ($params['width']>0)) $this->width = intval($params['width']);
     }
     
@@ -46,7 +47,16 @@ class grid_column {
      * @return string|null if not empty value is returned it will be inserted into the cell element
      */
     public function render_th() {
-        return htmlspecialchars($this->title);
+        $res = '';
+        $cell = $this->table->cell;
+        if (!empty($this->params['header_icon'])) $res .= '<span class="ui-icon '.$this->params['header_icon'].
+            '" style="float:left;margin-left:-5px"></span>';
+        if (!empty($this->params['header_link'])) {
+            $cell->attr['onclick'] = "document.location='{$this->params['header_link']}'";
+            $cell->attr['class'] = trim(@$cell->attr['class'].' clickable');
+        }
+        $res .= htmlspecialchars($this->title);
+        return $res;
     }
     
     /**
