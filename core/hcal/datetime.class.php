@@ -129,8 +129,8 @@ class hcal_datetime {
      * @desc Return a date as a Hebrew date in Jewish calendar
      * If $htimes is not null, specifies hcal_halachic_times object which is used to determine
      * if we're after the sunset and have to increase a day by 1
-     * @param hcal_halachic_times $htimes
      * @param string $weekday type of weekday to add or null for no weekday ('full'|'short')
+     * @param hcal_halachic_times $htimes
      * @return string
      */
     public function get_hebrew_date($weekday=null, $htimes=null) {
@@ -143,6 +143,10 @@ class hcal_datetime {
         return $res;
     }
     
+    /**
+     * @param string $type null, 'full' or 'short'. Return number 0 by 6 if null
+     * @param hcal_halachic_times $htimes if not empty, increase by 1 day after the sunset  
+     */
     public function get_weekday($type='full',$htimes=null) {
         $jd = $this->jd;
         if (!empty($htimes)) {

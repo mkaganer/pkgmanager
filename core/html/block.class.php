@@ -152,8 +152,18 @@ class html_block {
    * @return unknown_type
    */
   public function form_element($type,$name,$param=null) {
-    global $_pkgman;
-    $elm_class = $_pkgman->get('html')->config['form_element_map'][$type];
+      self::create_form_element($type,$name,$param);
+  }
+  
+  /**
+   * @desc Creates a new instance of the appropriate form element. Static version
+   * @param string $type - one of <code>config['form_element_map']</code> 
+   * @param string $name - name attribute
+   * @param array $param - additional parameters (@see appropriate element class for details)
+   * @return unknown_type
+   */
+  public static function create_form_element($type,$name,$param=null) {
+    $elm_class = pkgman_manager::getp('html')->config['form_element_map'][$type];
     if (empty($elm_class)) throw new Exception("Unmapped element type [$type]");
     
     return new $elm_class($type,$name,$param);
@@ -166,7 +176,7 @@ class html_block {
       if ($cmd=='#') {
         if (count($arr)<2) throw new Exception("Bad array('#xxx',...) syntax!");
         array_shift($arr); $name = array_shift($arr);
-        $arr = $this->form_element($arg,$name,$arr);
+        $arr = self::create_form_element($arg,$name,$arr);
         return;
       }
     }

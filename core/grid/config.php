@@ -23,6 +23,12 @@ $config = array(
         // 1 or more button links which automatically add the primary key to the link url
         'buttons' => 'grid_column_buttons',  
     ),
+    
+    'element_types' => array(
+        0 => 'grid_element_text',
+        'boolean' => 'grid_element_boolean',
+        'date' => 'grid_element_date',
+    ),
 
     // the default table tag class 
     'table_attr' => array('class'=>'grid', 'cellspacing'=>0, 'cellpadding'=>5, 'border'=>1),
@@ -46,4 +52,6 @@ $config = array(
     
     'sort_icon_asc' => 'ui-icon-triangle-1-n',
     'sort_icon_desc' => 'ui-icon-triangle-1-s',
+    
+    'submit_text' => 'Save',
 );
