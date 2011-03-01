@@ -98,6 +98,11 @@ class grid_table extends grid_base {
      */
     public $cell;
     
+    /**
+     * @var grid_toolbar
+     */
+    public $toolbar;
+    
     private $actual_orderby;
     
     private $full_sql;
@@ -124,6 +129,7 @@ class grid_table extends grid_base {
         $this->order_var = $c['order_var'];
         $this->rows_per_page = $c['rows_per_page'];
         $this->id_column = $c['default_id_column'];
+        $this->toolbar = new grid_toolbar();
     }
     
     public function setup_paging($count_query, $rows_per_page=null) {
@@ -217,6 +223,9 @@ class grid_table extends grid_base {
      */
     public function render() {
         $res = new html_block();
+        
+        if (!empty($this->toolbar->members)) $res->add($this->toolbar);
+        
         $this->table = new html_element('table',$this->table_attr);
         $this->table->add($thead = new html_element('thead'));
         $this->table->add($tbody = new html_element('tbody'));

@@ -312,4 +312,48 @@ class hcal_halachic_times {
         return $omer_txt;
     }
     
+    /**
+     * @desc Calculate the Jewish year "signature" code in the Hebrew calendar. This code is used to calculate
+     * the Parashat HaShavua e.t.c.
+     * The code format is as follows:
+     *     char 0: 'p'=a simple year or 'm'=a leap year
+     *     char 1: number 1-7 a weekday of Rosh Hashanah (1 is sunday, 7 is Shabbath)
+     *     char 2: number 1-3: 1 - type of the year 'chasera','kesidrah','shlemah'
+     *     char 3: number 1-7 a weekday of Rosh Chodesh Nisan (1 is sunday, 7 is Shabbath)
+     *     If $this->location is in "Chul", 'c' is appended in appropriate situations
+     * @param int $y the Jewish year number (like 5770)
+     */
+    public function get_year_sign($y=null) {
+        if (empty($y)) $y = $this->heb_date[2];
+        $is_leap = hcal_datetime::is_leap_year($y);
+        $code = $is_leap?'m':'p';
+        // get the JD of the Rosh HaShanah
+        $rh_jd = jewishtojd(1,1,$y);
+        $code .= (($rh_jd+1) % 7)+1;
+        // get the JD of Rosh Chodesh Nisan
+        $n_jd = jewishtojd(8,1,$y);
+        $code .= (($n_jd-$rh_jd) - ($is_leap?205:175));
+        $code .= (($n_jd+1) % 7)+1;
+        if (!empty($this->location->data['chul']) && (($code[3]=='5')||(($code[3]=='7')))) $code .= 'c';
+        return $code;
+    }
+    
+    public function get_month_length($m=null,$y=null) {
+        if (empty($y)) $y = $this->heb_date[2];
+        if (empty($m)) $m = $this->heb_date[0];
+        if ($m==1) return 30; // Tishrey always 30 days
+        if ($m<4) {
+            // Cheshvan/Kislev: depends on the year's sign
+            $sign = $this->get_year_sign();
+            if ($sign[2]=='1') return 29;
+            elseif ($sign[2]=='2') return ($m==3)?30:29;
+            else return 30;
+        }
+        // Adar I of the leap year is always 30 days
+        if ($m==14) return 30;
+        if ($m==15) $m = 6; // Adar II comes in place of Adar
+        elseif ($m>6) $m -= 1;
+        return ($m % 2)?30:29;
+    }
+    
 }
