@@ -33,6 +33,10 @@
         <name lang="he">צרפת</name>
         <name lang="en">France</name>
     </country>
+    <country id="ES">
+        <name lang="he">ספרד</name>
+        <name lang="en">Spain</name>
+    </country>
     <country id="DE">
         <name lang="he">גרמניה</name>
         <name lang="en">Germany</name>
@@ -259,6 +263,16 @@
     <location id="FR/Paris" lat="48.866667" lon="2.33333" tz="Europe/Paris" chul="1">
         <name lang="he">פריז</name>
         <name lang="en">Paris</name>
+    </location>
+
+    <!-- Spain -->
+    <location id="ES/Madrid" lat="40.419769" lon="-3.699646" tz="Europe/Madrid" chul="1">
+        <name lang="he">מדריד</name>
+        <name lang="en">Madrid</name>
+    </location>
+    <location id="ES/Barcelona" lat="41.383333" lon="2.183333" tz="Europe/Madrid" chul="1">
+        <name lang="he">ברצלונה</name>
+        <name lang="en">Barcelona</name>
     </location>
     
     <!-- Germany -->
