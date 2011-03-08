@@ -46,8 +46,8 @@ class html_url {
     $q = explode('&',$query);
     foreach($q as $qstr) {
       $v = explode('=',$qstr,2);
-      if (!isset($v[1]) || empty($v[0])) continue;
-      $this->query[$v[0]] = urldecode($v[1]);
+      if (empty($v[0])) continue;
+      $this->query[$v[0]] = empty($v[1])?null:urldecode($v[1]);
     }
   }
   
