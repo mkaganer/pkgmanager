@@ -26,8 +26,13 @@ $config = array(
     
     'element_types' => array(
         0 => 'grid_element_text',
-        'boolean' => 'grid_element_boolean',
+        'special' => 'grid_element_special',
+        'hidden' => 'grid_element_hidden',
+        'password' => 'grid_element_password',
         'date' => 'grid_element_date',
+        'datetime' => 'grid_element_date',
+        'checkbox' => 'grid_element_checkbox',
+        
     ),
 
     // the default table tag class 

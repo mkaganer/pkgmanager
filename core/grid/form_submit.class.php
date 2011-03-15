@@ -8,7 +8,7 @@ class grid_form_submit extends html_element {
     public function __construct($text=null,$name='submit') {
         $pkg = pkgman_manager::getp('grid');
         if (empty($text)) $text = $pkg->config['submit_text'];
-        $class = 'grid-button';
+        $class = 'grid-button grid-button-submit';
         $form_id = $pkg->config['details_from_id'];
         parent::__construct('input',array(
             'class' => $class,
