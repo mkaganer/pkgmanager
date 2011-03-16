@@ -8,7 +8,7 @@
  * This is a default class to be used by sql_connection::get_model() to load model class.
  * The class that will be used as "model provider" is set by "model_provider" config value
  * of the connection object, and the default value is
- * <code>$GLOBALS['_pkgman']->get('sql')->config["default_model_provider"]</code>
+ * <code>pkgmanager_manager::getp('sql')->config["default_model_provider"]</code>
  *
  * This implementation of model provider looks for model classes in packages stored in "models" config
  * value of sql_connection which may be string or array of strings. It will try to look for a class named

@@ -13,7 +13,7 @@
  * @author mkaganer
  */
 class html_block {
-
+    
   /**
    * @desc If false, the block will not be rendered to the output.
    * @var bool
@@ -56,6 +56,14 @@ class html_block {
    */
   private $_tpl = null;
 
+
+  private static $_pkg;
+  /**
+   * @return pkgmanager_package
+   */
+  public static function get_pkg() {
+      if (empty(self::$_pkg)) self::$_pkg = pkgman_manager::getp('html');      
+  }
   
   
   /**
@@ -64,10 +72,10 @@ class html_block {
    * @param mixed $elm,... - elements to add to a new instance
    */
   public function __construct() {
-    if (func_num_args()>0) {
-      $args = func_get_args();
-      $this->add($args);
-    }
+      if (func_num_args()>0) {
+          $args = func_get_args();
+          $this->add($args);
+      }
   }
   
  
@@ -295,8 +303,7 @@ class html_block {
    * @param string $tpl_name - template's name
    */
   public function load_template($tpl_name) {
-    global $_pkgman;
-    $pkg = $_pkgman->get("html");
+    $pkg = self::get_pkg();
     if (!isset($pkg->config['tpl_manager']))
       $tplman = $pkg->config['tpl_manager'] = new html_tpl_manager();
       else $tplman = $pkg->config['tpl_manager'];

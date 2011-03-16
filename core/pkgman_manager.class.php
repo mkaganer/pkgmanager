@@ -25,7 +25,7 @@ class pkgman_manager {
   /**
    * @var pkgman_manager
    */
-  private static $instance = null;
+  public static $instance = null;
 
   /**
    * @return pkgman_manager
