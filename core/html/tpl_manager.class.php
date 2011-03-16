@@ -6,8 +6,7 @@ class html_tpl_manager {
   private $cache = array(); // holds compiled templates (html_tpl_compiled) cache
   
   public function __construct($path=null) {
-    global $_pkgman;
-    $pkg = $_pkgman->get("html");
+    $pkg = self::get_pkg();
     if (empty($path)) $path = $pkg->config['tpl_path'];
     if (empty($path)) throw new Exception("Template path not specified!");
     $path = realpath(rtrim($path,'/\\'));

@@ -2,8 +2,8 @@
 /*
   B.H.
 
-  PkgMan - A Class packages manager and class library for PHP 5
-  Copyright (C) 2009 Mordechay Kaganer (mkaganer@gmail.com)
+  pkgmanager - A Class packages manager and class library for PHP 5
+  Copyright (C) 2009-2011 Mordechay Kaganer (mkaganer@gmail.com)
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 
 // Main initialization script that is used to initialize the package system
 
-if (version_compare("5.0.0",PHP_VERSION,">")) die("PkgMan requires PHP5 or later!");
+if (version_compare("5.1.0",PHP_VERSION,">")) die("pkgmanager requires PHP5 or later!");
 
 define("_PKGMAN_ROOT",rtrim(dirname(__FILE__),"\\/"));
 
@@ -38,17 +38,14 @@ require(_PKGMAN_ROOT."/pkgman_package.class.php");
 $_pkgman = pkgman_manager::get_instance();
 
 if (_PKGMAN_USE_SPL_AUTOLOAD) {
-    
     function _pkgman_autoload($class) {
-      global $_pkgman;
-      $_pkgman->load_class($class);
+        pkgman_manager::$instance->load_class($class);
     }
     
     spl_autoload_register('_pkgman_autoload');
 } else {
     // if not using spl_autoload
     function __autoload($class) {
-      global $_pkgman;
-      $_pkgman->load_class($class);
+        pkgman_manager::$instance->load_class($class);
     }
 }

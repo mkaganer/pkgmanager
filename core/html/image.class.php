@@ -41,8 +41,7 @@ class html_image extends html_element {
   }
   
   protected function render($param=null) {
-    global $_pkgman;
-    $pkg = $_pkgman->get("html");
+    $pkg = self::get_pkg();
     $size = $this->size;
     if (isset($param[0])) $size = $param[0];
     if (preg_match('/\\.swf$/i',$this->attr['src'])) return $this->render_flash($pkg,$size);
