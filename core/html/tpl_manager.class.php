@@ -5,6 +5,15 @@ class html_tpl_manager {
   private $tpl_path;
   private $cache = array(); // holds compiled templates (html_tpl_compiled) cache
   
+  /**
+   * @return pkgmanager_package
+   */
+  public static function get_pkg() {
+      static $_pkg;
+      if (empty($_pkg)) return $_pkg = pkgman_manager::getp('html');
+      return $_pkg;
+  }
+  
   public function __construct($path=null) {
     $pkg = self::get_pkg();
     if (empty($path)) $path = $pkg->config['tpl_path'];
