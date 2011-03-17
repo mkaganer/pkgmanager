@@ -56,13 +56,13 @@ class html_block {
    */
   private $_tpl = null;
 
-
-  private static $_pkg;
   /**
    * @return pkgmanager_package
    */
   public static function get_pkg() {
-      if (empty(self::$_pkg)) self::$_pkg = pkgman_manager::getp('html');      
+      static $_pkg;
+      if (empty($_pkg)) return $_pkg = pkgman_manager::getp('html');
+      return $_pkg;
   }
   
   
