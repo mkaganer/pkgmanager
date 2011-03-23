@@ -253,7 +253,8 @@ abstract class sql_connection {
   	if (is_object($where)) $where = $where->__toString();
     $where = trim($where);
     if (empty($where)) throw new Exception("update() \$where is empty!");
-    $sql = "update `$table` set ";
+    if (strpos($table,'.')===false) $table = "`$table`";
+    $sql = "update $table set ";
     $psik = false;
     foreach ($values as $col => $val) {
       if ($psik) $sql .= ', ';
@@ -281,7 +282,8 @@ abstract class sql_connection {
    * @return boolean - true on success
    */
   public function insert($table,$values) {
-    $sql = "insert into `$table` (";
+    if (strpos($table,'.')===false) $table = "`$table`";
+    $sql = "insert into $table (";
     $psik = false;
     foreach ($values as $col => $val) {
       if ($psik) $sql .= ', ';
