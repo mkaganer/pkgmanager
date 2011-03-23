@@ -8,6 +8,6 @@ Contains a database abstraction layer classes, which i find VERY useful :-)
 
 Currently, the framework contains HTML output object model, with a robust template file parser/renderer. Each HTML block contains a tree of "member" elements (nested html_block class instances or raw strings) which can be accessed by a "path" like syntax. HTML package also contains classes to manage 2-way data-binded form elements (Element values are loaded from the corresponding keys of "data" array, and the submitted values are stored back)
 
-It is still in early stages of development, so many planned features are missing.
+Sorry, most of docs are still missing, but many APIs are described in PHPDoc comments and method declarations.
 
 Best regards, Mordechay Kaganer
