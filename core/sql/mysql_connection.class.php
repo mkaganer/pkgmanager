@@ -74,7 +74,7 @@ class sql_mysql_connection extends sql_connection {
     $res = call_user_func($query_func,$query,$this->link);
     if (($res===false) || (is_null($res))) {
       if ($this->config['throw_on_error'])
-        throw new sql_error($this->error_msg(),$this->link);
+        throw new sql_error($this->error_msg(),$this->link, $query);
       return false;
     }
     if (defined('_TRACE_QUERIES')) $_trace_log->snapshot('QUERY: '.$query,$snap);

@@ -73,7 +73,7 @@ class sql_mysqli_connection extends sql_connection {
     $res = $this->link->query($query,$mode);
     if (($res===false) || (is_null($res))) {
       if ($this->config['throw_on_error'])
-        throw new sql_error($this->link->error,$this->link);
+        throw new sql_error($this->link->error,$this->link, $query);
       return false;
     }
     if (defined('_TRACE_QUERIES')) $_trace_log->snapshot('QUERY: '.$query,$snap);
