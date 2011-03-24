@@ -10,4 +10,7 @@ Currently, the framework contains HTML output object model, with a robust templa
 
 Sorry, most of docs are still missing, but many APIs are described in PHPDoc comments and method declarations.
 
+This library is hosted on Google Code (SVN): http://code.google.com/p/pkgmanager/
+Also hosted at GitHub: https://github.com/mkaganer/pkgmanager
+
 Best regards, Mordechay Kaganer
