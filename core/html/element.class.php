@@ -18,7 +18,7 @@ class html_element extends html_block implements ArrayAccess{
      */
     public static $force_no_self_close = array(
         'div', 'script', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'b', 'i',
-        'strong', 'em', 'a', 'select',
+        'strong', 'em', 'a', 'select', 'textarea', 'ul', 'ol',
     );
     
     
