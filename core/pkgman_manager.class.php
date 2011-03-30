@@ -162,5 +162,3 @@ class pkgman_manager {
   }
 
 }
-
-?>
