@@ -26,8 +26,8 @@ class html_form extends html_element {
      * @param boolean $is_upload
      */
     public function set_upload($is_upload=true) {
-        if ($is_upload) $this->attr['enctype'] = "multipart/form-data";
-        else unset($this->attr['enctype']);
+        if ($is_upload) $this['enctype'] = "multipart/form-data";
+        else unset($this['enctype']);
     }
     
 }
