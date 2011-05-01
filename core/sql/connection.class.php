@@ -249,12 +249,12 @@ abstract class sql_connection {
    * @param string $where - a string to use in the WHERE clause
    * @return boolean - true on success
    */
-  public function update($table,$values,$where) {
+  public function update($table,$values,$where,$statement="UPDATE") {
   	if (is_object($where)) $where = $where->__toString();
     $where = trim($where);
     if (empty($where)) throw new Exception("update() \$where is empty!");
     if (strpos($table,'.')===false) $table = "`$table`";
-    $sql = "update $table set ";
+    $sql = "$statement $table set ";
     $psik = false;
     foreach ($values as $col => $val) {
       if ($psik) $sql .= ', ';
@@ -281,9 +281,9 @@ abstract class sql_connection {
    * @param array $values - array('col1'=>'val1',...'!time'=>'now()')
    * @return boolean - true on success
    */
-  public function insert($table,$values) {
+  public function insert($table,$values,$statement="INSERT") {
     if (strpos($table,'.')===false) $table = "`$table`";
-    $sql = "insert into $table (";
+    $sql = "$statement into $table (";
     $psik = false;
     foreach ($values as $col => $val) {
       if ($psik) $sql .= ', ';
@@ -296,11 +296,7 @@ abstract class sql_connection {
     foreach ($values as $col => $val) {
       if ($psik) $sql .= ', ';
       $psik = true;
-      if ($col[0] == '!') {
-        $sql .= "($val)";
-      } else {
-        $sql .= sprintf("'%s'",$this->escape($val));
-      }
+      $sql .= ($col[0] == '!')?"($val)":"'".$this->escape($val)."'";
     }
     $sql .= ")";
     $res = $this->query($sql);
@@ -308,4 +304,3 @@ abstract class sql_connection {
   }
 
 }
-?>
