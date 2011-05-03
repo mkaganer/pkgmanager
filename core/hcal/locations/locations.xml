@@ -150,6 +150,10 @@
         <name lang="he">בני ברק</name>
         <name lang="en">Bney Brak</name>
     </location>
+    <location id="IL/Elad" lat="32.051153" lon="34.950943" tz="Asia/Jerusalem">
+        <name lang="he">אלעד</name>
+        <name lang="en">Elad</name>
+    </location>
     <location id="IL/Beer_Sheva" lat="31.250000" lon="34.783333" tz="Asia/Jerusalem">
         <name lang="he">באר שבע</name>
         <name lang="en">Beer Sheva</name>
