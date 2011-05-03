@@ -234,19 +234,21 @@ class hcal_halachic_times {
     
     /**
      * @desc Check if the current time is forbidden to do "melachah": Shabbat or Yom Tov
+     * @param $tosefet_b "Tosefet Shabbat" in minutes to observe before the Shabat
+     * @param $tosefet_a "Tosefet Shabbat" in minutes to observe after the Shabat
      * @return bool
      */
-    public function is_kodesh() {
+    public function is_kodesh($tosefet_b=18.0, $tosefet_a=40.0) {
         $jd = $this->datetime->jd;
         if ($this->now >= $this->sunset) $jd += 1;
         //echo $this->format($this->now);
         if ($this->is_jd_kodesh($jd)) return true;
         // check "Tosefet Shabbat" 18 minutes before
-        if (($this->now < $this->sunset) && ($this->now >= ($this->sunset-18.0/60.0))) {
+        if (($this->now < $this->sunset) && ($this->now >= ($this->sunset-$tosefet_b/60.0))) {
             if ($this->is_jd_kodesh($jd+1)) return true;
         }
         // check "Tosefet Shabbat" 40 minutes after
-        if (($this->now > $this->sunset) && ($this->now <= ($this->sunset+40.0/60.0))) {
+        if (($this->now > $this->sunset) && ($this->now <= ($this->sunset+$tosefet_a/60.0))) {
             if ($this->is_jd_kodesh($jd-1)) return true;
         }
         return false;
