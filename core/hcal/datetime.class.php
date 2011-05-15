@@ -133,13 +133,13 @@ class hcal_datetime {
      * @param hcal_halachic_times $htimes
      * @return string
      */
-    public function get_hebrew_date($weekday=null, $htimes=null) {
+    public function get_hebrew_date($weekday=null, $htimes=null, $year_with_gereshaim = true) {
         $data = $this->get_hebrew_date_numeric($htimes);
         $res = '';
         if ($weekday) {
             $res .= $this->lang_output->weekday(($this->jd+1) % 7,$weekday).', ';
         }
-        $res .= $this->lang_output->hebrew_date($data);
+        $res .= $this->lang_output->hebrew_date($data, $year_with_gereshaim);
         return $res;
     }
     
