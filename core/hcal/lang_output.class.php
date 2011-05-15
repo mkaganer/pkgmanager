@@ -117,8 +117,9 @@ class hcal_lang_output {
      * @param int $number
      * @return string
      */
-    public function num_to_hebrew($number) {
+    public function num_to_hebrew($number, $with_gereshaim = null) {
         if ($this->lang!='he') return $number;
+        if (is_null($with_gereshaim)) $with_gereshaim = $this->gereshaim;
         $number = intval($number);
         if (empty($number)) return '';
         // convert numbers from 1 to 999. Add alafim by recursion
@@ -130,8 +131,7 @@ class hcal_lang_output {
         if (isset(self::$heb_numbers[$m100])) $res = self::$heb_numbers[$m100];
         else $res = self::$heb_numbers[$m2].self::$heb_numbers[$m1];
         if ($num>=100) $res = self::$heb_numbers[intval($num - $m100)].$res;
-        
-        if ($this->gereshaim) {
+        if ($with_gereshaim) {
             $len = mb_strlen($res,'utf-8');
             if ($len==1) $res.="'";
             elseif ($len>1) $res = mb_substr($res,0,$len-1,'utf-8').'"'.mb_substr($res,$len-1,1,'utf-8');
@@ -172,8 +172,8 @@ class hcal_lang_output {
         return self::$week_days[$type][$this->lang][$weekday_num];
     }
     
-    public function hebrew_date($data) {
-        $year = $this->num_to_hebrew($data[2]);
+    public function hebrew_date($data, $year_with_gereshaim = true) {
+        $year = $this->num_to_hebrew($data[2], $year_with_gereshaim);
         $month = $this->month_to_str($data[0]);
         $day = $this->num_to_hebrew($data[1]);
         if ($this->lang=='he') return "$day ב$month $year";
