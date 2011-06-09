@@ -2,11 +2,29 @@
 // B.H.
 
 class html_url {
-    public $is_absolute; // is the url absolute or relative
-    public $schema; // http/https/mailto/javascript
-    public $host; // makes sence only for http/https
+    /**
+     * @var boolean is the url absolute or relative
+     */
+    public $is_absolute; 
+    /**
+     * @var string url schema like http/https/mailto/javascript
+     */
+    public $schema;
+    /**
+     * @var string note: makes sence only for http/https
+     */
+    public $host;
+    /**
+     * @var string
+     */
     public $path;
+    /**
+     * @var array
+     */
     public $query = array();
+    /**
+     * @var string
+     */
     public $hash;
     
     public function __construct($url) {
