@@ -65,6 +65,7 @@ class html_url {
         foreach($q as $qstr) {
             $v = explode('=',$qstr,2);
             if (empty($v[0])) continue;
+            $v[0] = urldecode($v[0]);
             if (strpos($v[0],'[')===false) $this->query[$v[0]] = isset($v[1])?urldecode($v[1]):null;
             else {
                 $v1 = explode('[',$v[0]);

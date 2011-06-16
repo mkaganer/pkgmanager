@@ -5,7 +5,8 @@
  * @desc Base class for SQL filter builders
  * @author mkaganer
  */
-abstract class sql_filter {
+abstract class sql_filter implements ArrayAccess {
+    
     /**
      * @var sql_connection
      */
@@ -64,9 +65,32 @@ abstract class sql_filter {
      * @var array
      */
     public $filters;
+    
+    public function new_filter($filters,$operator=null,$prefix=null) {
+        $new_filter = clone $this;
+        $new_filter->filters = $filters;
+        if (!empty($operator)) $new_filter->operator = $operator;
+        if (!empty($prefix)) $new_filter->prefix = $prefix;
+        return $new_filter;
+    }
+    
+    /* ArrayAccess implementation */
+    
+    public function offsetSet($offset, $value) {
+        $this->filters[$offset] = $value;
+    }
+    public function offsetExists($offset) {
+        return isset($this->filters[$offset]);
+    }
+    public function offsetUnset($offset) {
+        unset($this->filters[$offset]);
+    }
+    public function offsetGet($offset) {
+        return isset($this->filters[$offset]) ? $this->filters[$offset] : null;
+    }
+    
 
     public abstract function render();
 
     public abstract function __toString();
 }
-?>

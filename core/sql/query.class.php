@@ -27,7 +27,7 @@ class sql_query {
     /**
      * @var pkgman_package
      */
-    private $_mypkg;
+    private $_pkg;
     
     public function __construct($query,$xlink=null) {
         if ($xlink instanceof sql_connection) $this->xlink = $xlink;
@@ -70,17 +70,12 @@ class sql_query {
     }
     
     public function __toString() {
-        try {
-            return $this->render();
-        } catch (Exception $ex) {
-            die("Error in sql_query::render()");
-            //die("Exception during rendering query! <br />".$ex);
-        }
+        return $this->render();
     }
     
     protected function substitute_params($sql) {
-        $this->_mypkg = pkgman_manager::getp('sql');
-        if (empty($this->_mypkg->config['global_params'])) $this->_mypkg = null;
+        $this->_pkg = pkgman_manager::getp('sql');
+        if (empty($this->_pkg->config['global_params'])) $this->_pkg = null;
         $sql = preg_replace_callback('#\\${(!?[a-zA-Z0-9_\\-|]+)}#u',
             array($this,'substitute_params_callback'), $sql
         );
@@ -96,8 +91,8 @@ class sql_query {
         }
         $data = explode('|',$cmd);
         if (isset($this->params[$data[0]])) $res = $this->params[$data[0]];
-        elseif ($this->_mypkg && isset($this->_mypkg->config['global_params'][$data[0]])) {
-            $res = $this->_mypkg->config['global_params'][$data[0]];
+        elseif ($this->_pkg && isset($this->_pkg->config['global_params'][$data[0]])) {
+            $res = $this->_pkg->config['global_params'][$data[0]];
         }
         else return $m[0]; // if the variable
 
