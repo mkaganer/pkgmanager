@@ -336,7 +336,7 @@ class html_block {
       // (this happens if HTTP Content-type is set to text/html and not to XML doctype) 
       $force_no_self_close = array(
           'div', 'script', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'b', 'i',
-          'strong', 'em', 'a',
+          'strong', 'em', 'a', 'iframe',
       );
       // first of all, strip html comments
       $html = preg_replace('#<!--.*-->#uUs','',$html);
