@@ -36,26 +36,29 @@ class sql_mysqli_connection extends sql_connection {
       'charset' => @$pkg->config['charset'],
       'buffered' => true,
       'throw_on_error' => @$pkg->config['throw_on_error'],
+      'on_demand' => false, // if true will actually connect only when some query is executed
     );
 
     // merge all config arrays together
     if (empty($con_config)) $con_config = array();
-    $this->config = $config = array_merge($this->config,$default_config,$con_config);
-
-    if (!empty($config['link']))
-      $link = $config['link'];
-      else $link = new mysqli($config['host'],$config['user'],$config['pass'],
-                              $config['db'],$config['port'],$config['socket']);
-    if (!$link) throw new Exception("MYSQLi connection failed!");
-    $this->link = $link;
-
-    if (!empty($config['charset'])) $link->set_charset($config['charset']);
+    $this->config = array_merge($this->config,$default_config,$con_config);
+    
+    if (empty($this->config['on_demand'])) $this->set_link();
   }
 
   public function __destruct() {
-    if (($this->link) && (empty($this->config['noclose']))) $this->link->close();
+    if (($this->link) && (!empty($this->config['close_on_desctruct']))) $this->link->close();
   }
+  
+  protected function set_link() {
+    $this->link = (!empty($this->config['link']))?$this->config['link']:
+        new mysqli($this->config['host'],$this->config['user'],$this->config['pass'],
+            $this->config['db'],$this->config['port'],$this->config['socket']);
+    if (empty($this->link)) throw new Exception("mysqli connection failed!");
 
+    if (!empty($this->config['charset'])) $this->link->set_charset($this->config['charset']);
+  }
+  
   public function select_db($db) {
   	$this->link->select_db($db);
   }
@@ -65,6 +68,7 @@ class sql_mysqli_connection extends sql_connection {
    */
   public function query($query) {
     global $_trace_log;
+    if (empty($this->link)) $this->set_link();
     // render query object if needed and implicitly convert to a string (PHP >=5.2 needed!)
     $query = ($query instanceof sql_query)?$query->render():((string)$query);
     if (defined('_TRACE_QUERIES')&&empty($_trace_log)) $_trace_log = new utils_microtimer();
