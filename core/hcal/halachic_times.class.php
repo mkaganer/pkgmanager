@@ -66,6 +66,14 @@ class hcal_halachic_times {
      */
     public $datetime;
     
+    
+    /**
+     * The julian day for which we have returned the Omer count 
+     * maybe null, ($this->datetime->jd) or ($this->datetime->jd+1)   
+     * @var int
+     */
+    public $omer_jd;
+    
     /**
      * @desc Hebrew dates when is_kodesh will be true format: 'month/day'
      * 'eretz' is Eretz Israel (ארץ ישראל)
@@ -279,10 +287,11 @@ class hcal_halachic_times {
      */
     public function get_omer($force_next=false) {
         $jd = $this->datetime->jd;
-        if ($force_next || ($this->now >= $this->sunset)) $jd += 1;
+        if (($force_next || ($this->now >= $this->sunset)) && ($this->now >= $this->sunrise)) $jd += 1;
+        $this->omer_jd = $jd;
         // Get the JD of 15 Nisan of the current year
-        $omer_jd = jewishtojd(8,15,$this->heb_date[2]);
-        $omer_cnt = $jd - $omer_jd;
+        $omer_base_jd = jewishtojd(8,15,$this->heb_date[2]);
+        $omer_cnt = $jd - $omer_base_jd;
         if (($omer_cnt<1) || ($omer_cnt>49)) return 0;
         return $omer_cnt;
     }
