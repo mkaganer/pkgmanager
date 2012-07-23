@@ -8,7 +8,7 @@
 class sql_mysqli_connection extends sql_connection {
 
   /**
-   * @var mysqli - reference to a wrapped mysqli object
+   * @var mysqli reference to a wrapped mysqli object
    */
   public $link;
 
@@ -88,11 +88,17 @@ class sql_mysqli_connection extends sql_connection {
   public function is_error() {
     return ($this->link->errno>0);
   }
+  
   public function error_msg() {
     return $this->link->error;
   }
+  
   public function insert_id() {
     return $this->link->insert_id;
+  }
+  
+  public function affected_rows() {
+  	return $this->link->affected_rows;
   }
 
   public function escape($str) {

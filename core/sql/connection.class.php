@@ -117,14 +117,19 @@ abstract class sql_connection {
   abstract public function is_error();
 
   /**
-   * @return last error message text
+   * @return string last error message text
    */
   abstract public function error_msg();
 
   /**
-   * @return last insert id
+   * @return int last insert id
    */
   abstract public function insert_id();
+  
+  /**
+   * @return int number of rows affected by the last query 
+   */
+  abstract public function affected_rows();
 
   /**
    * @param $str - input string

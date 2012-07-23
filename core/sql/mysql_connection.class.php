@@ -89,11 +89,17 @@ class sql_mysql_connection extends sql_connection {
   public function is_error() {
     return  (mysql_errno($this->link)>0);
   }
+
   public function error_msg() {
   	return mysql_error($this->link);
   }
+  
   public function insert_id() {
   	return mysql_insert_id($this->link);
+  }
+  
+  public function affected_rows() {
+  	return mysql_affected_rows($this->link);
   }
 
   public function escape($str) {
